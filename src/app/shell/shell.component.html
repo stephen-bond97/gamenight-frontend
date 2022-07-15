@@ -1,0 +1,19 @@
+<div>
+    <button (click)="HandleCreateLobbyClick()">create lobby</button>
+    <div>{{LobbyCode}}</div>
+</div>
+
+<br>
+
+<div>
+    <input [(ngModel)]="LobbyCode"/>
+    <button (click)="HandleJoinLobbyClick()">join lobby</button>
+</div>
+
+<br>
+
+<div>
+    <input [(ngModel)]="Message"/>
+    <button (click)="HandleSendMessageClick()">Send Message</button>
+    {{Reply}}
+</div>
