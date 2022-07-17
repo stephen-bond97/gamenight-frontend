@@ -10,11 +10,13 @@ export class ShellComponent {
   public LobbyCode = "";
   public Message = "";
   public Reply = "";
+  public LobbyState = "Not created";
 
   public constructor(private socketService: SocketService) {
     this.socketService.LobbyCreated.subscribe((lobbyCode) => this.handleLobbyCreated(lobbyCode));
     this.socketService.LobbyJoined.subscribe(() => this.handleLobbyJoined());
-    this.socketService.InformationShared.subscribe((data) => this.handleInformationShared(data))
+    this.socketService.LobbyClosed.subscribe(() => this.handleLobbyClosed());
+    this.socketService.InformationShared.subscribe((data) => this.handleInformationShared(data));
   }
 
   public HandleCreateLobbyClick(): void {
@@ -29,12 +31,17 @@ export class ShellComponent {
     this.socketService.ShareInformation(this.Message);
   }
 
-  private handleLobbyCreated(lobbyCode: string) {
+  private handleLobbyCreated(lobbyCode: string): void {
     this.LobbyCode = lobbyCode;
+    this.LobbyState = "Lobby Created";
   }
 
   private handleLobbyJoined(): void {
-    console.log("player joined");
+    this.LobbyState = "Lobby joined";
+  }
+
+  private handleLobbyClosed(): void {
+    this.LobbyState = "Lobby closed";
   }
 
   private handleInformationShared(data: string): void {
