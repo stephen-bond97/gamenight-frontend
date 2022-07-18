@@ -1,0 +1,30 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+app-splash {
+    display: flex;
+    flex-direction: column;
+
+    flex-grow: 0;
+    height: 0;
+    width: 100%;
+    transition: 1s all;
+    overflow: hidden;
+
+    z-index: 100;
+    background-color: purple;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.full-screen {
+        flex-grow: 1;
+        transition: 1s all;
+    }
+}

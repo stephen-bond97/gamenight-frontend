@@ -6,17 +6,24 @@ import { SocketService } from '../services/socket.service';
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
 })
-export class ShellComponent {
+export class ShellComponent implements OnInit {
   public LobbyCode = "";
   public Message = "";
   public Reply = "";
   public LobbyState = "Not created";
+  public ShowFullscreen = true;
 
   public constructor(private socketService: SocketService) {
     this.socketService.LobbyCreated.subscribe((lobbyCode) => this.handleLobbyCreated(lobbyCode));
     this.socketService.LobbyJoined.subscribe(() => this.handleLobbyJoined());
     this.socketService.LobbyClosed.subscribe(() => this.handleLobbyClosed());
     this.socketService.InformationShared.subscribe((data) => this.handleInformationShared(data));
+  }
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.ShowFullscreen = false;
+    }, 3000);
   }
 
   public HandleCreateLobbyClick(): void {
