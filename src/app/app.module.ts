@@ -3,9 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
+import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
+
 import { SocketService } from './services/socket.service';
 import { ShellComponent } from './shell/shell.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -17,7 +20,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     BrowserModule,
     SocketIoModule.forRoot(config),
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
   providers: [SocketService],
   bootstrap: [ShellComponent]
