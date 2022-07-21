@@ -10,13 +10,16 @@ import { SocketService } from './services/socket.service';
 import { ShellComponent } from './shell/shell.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SplashComponent } from './components/splash/splash.component';
+import { TestComponent } from './components/test/test.component';
+import { TriviaService } from './services/trivia.service';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
 @NgModule({
   declarations: [
     ShellComponent,
-    SplashComponent
+    SplashComponent,
+    TestComponent // todo remove this when finished
   ],
   imports: [
     BrowserModule,
@@ -26,7 +29,7 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [SocketService],
+  providers: [SocketService, TriviaService],
   bootstrap: [ShellComponent]
 })
 export class AppModule { }

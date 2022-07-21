@@ -1,0 +1,28 @@
+
+<div>
+    <button (click)="HandleCreateLobbyClick()">create lobby</button>
+    <div>{{LobbyCode}}</div>
+</div>
+
+<br>
+
+<div>
+    <input [(ngModel)]="LobbyCode"/>
+    <button mat-flat-button color="primary" (click)="HandleJoinLobbyClick()">join lobby</button>
+    <button mat-flat-button color="accent">accent</button>
+    <button mat-flat-button color="warn">warn</button>
+</div>
+
+<br>
+
+<div>
+    <input [(ngModel)]="Message"/>
+    <button (click)="HandleSendMessageClick()">Send Message</button>
+    {{Reply}}
+</div>
+
+<br>
+
+<span>
+    {{LobbyState}}
+</span>

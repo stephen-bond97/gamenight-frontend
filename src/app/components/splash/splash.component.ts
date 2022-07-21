@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-splash',
@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SplashComponent implements OnInit {
 
+  @HostBinding('class.full-screen')
+  public ShowFullscreen = true;
+
   constructor() { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.ShowFullscreen = false;
+    }, 3000);
   }
 
 }
