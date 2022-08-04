@@ -3,7 +3,7 @@
         Create Lobby
     </div>
     <div>
-        <button routerLink="/trivia">Trivia</button>
+        <button routerLink="/trivia/create-lobby" (click)="HandleCreateLobbyClick()">Trivia</button>
     </div>
 </div>
 
@@ -14,7 +14,7 @@
         Join Lobby
         <div>
             <input>
-            <button>Join by Code</button>
+            <button routerLink="/trivia" (click)="HandleJoinLobbyClick()">Join by Code</button>
         </div>
     </div>
 </div>

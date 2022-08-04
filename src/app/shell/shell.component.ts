@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppService } from '../services/app.service';
 
 @Component({
   selector: 'app-shell',
@@ -6,7 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./shell.component.scss']
 })
 export class ShellComponent implements OnInit {
+  public loading = false;
+
 
   ngOnInit(): void {
+  }
+
+  /**
+   *
+   */
+  public constructor(private appService: AppService) {
+    this.appService.LoadingStateChange.subscribe((loading) => this.loading = loading);
   }
 }

@@ -1,0 +1,24 @@
+<!-- <button routerLink="/home">go back home</button>
+<input readonly="true" [(ngModel)]="LobbyCode"/> -->
+
+<mat-form-field appearance="fill">
+    <mat-label>Number of Rounds</mat-label>
+    <mat-select [(ngModel)]="numberOfRounds" name="Rounds">
+        <mat-option value="1">1</mat-option>
+        <mat-option value="2">2</mat-option>
+        <mat-option value="3">3</mat-option>
+        <mat-option value="4">4</mat-option>
+        <mat-option value="5">5</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <mat-select [(ngModel)]="selectedCategory" name="Category">
+       <mat-option *ngFor="let category of categories" [value]="selectedCategory">
+        {{Category2LabelMapping[category]}}
+       </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<button mat-flat-button color="accent" (click)="HandleCreateLobbyClick()">Create Lobby</button>

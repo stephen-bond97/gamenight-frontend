@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TriviaService } from 'src/app/services/trivia.service';
+import { SocketService } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-trivia',
@@ -8,11 +9,7 @@ import { TriviaService } from 'src/app/services/trivia.service';
 })
 export class TriviaPage implements OnInit {
 
-  public constructor(private trivia: TriviaService) { }
-
   ngOnInit(): void {
-    this.trivia.GetQuestions("videogames")
-    .subscribe((data: any) => console.log(data));
   }
 
 }

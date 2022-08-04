@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class TriviaService {
-    private url = "https://opendb.com/api.php";
+    private url = "https://sbond-gamenight.herokuapp.com/trivia/question";
 
     /**
      *
