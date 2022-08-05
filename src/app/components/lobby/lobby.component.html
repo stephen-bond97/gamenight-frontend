@@ -1,1 +1,16 @@
-{{LobbyCode}}
+<div *ngIf="ShowLobbyCode">
+    <input #clipboardInput [value]="LobbyCode" readonly style="opacity: 0; position: fixed; top: 0; left: 0" />
+
+    <mat-card>
+        <mat-card-content>
+            <mat-form-field appearance="outline" *ngIf="LobbyCode">
+                <mat-label>Your Lobby Code</mat-label>
+                <input matInput [value]="LobbyCode" readonly />
+            </mat-form-field>
+        </mat-card-content>
+
+        <mat-card-actions>
+            <button mat-button (click)="copyToClipboard(clipboardInput, $event)">COPY</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

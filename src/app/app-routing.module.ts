@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateLobbyComponent } from './components/create-lobby/create-lobby.component';
+import { JoinLobbyComponent } from './components/join-lobby/join-lobby.component';
 import { LobbyComponent } from './components/lobby/lobby.component';
 import { TriviaLobbyGuard } from './guards/trivia-lobby.guard';
 import { HomePage } from './pages/home/home.page';
@@ -20,6 +21,12 @@ const routes: Routes = [{
   }, {
     path: "create-lobby",
     component: CreateLobbyComponent
+  }, {
+    path: "join-lobby",
+    component: JoinLobbyComponent
+  }, {
+    path: "join-lobby/:LobbyCode",
+    component: JoinLobbyComponent
   }, {
     path: "lobby",
     component: LobbyComponent,

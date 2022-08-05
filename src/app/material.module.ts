@@ -3,20 +3,25 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+
+let modules = [
+  MatButtonModule,
+  MatIconModule,
+  MatSelectModule,
+  MatFormFieldModule,
+  MatCardModule,
+  MatInputModule
+];
 
 @NgModule({
   declarations: [],
   imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    MatFormFieldModule
+    ...modules
   ],
   exports: [
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    MatFormFieldModule
+    ...modules
   ]
 })
 export class MaterialModule { }

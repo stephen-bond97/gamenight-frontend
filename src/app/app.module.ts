@@ -17,6 +17,8 @@ import { CreateLobbyComponent } from './components/create-lobby/create-lobby.com
 import { AppService } from './services/app.service';
 import { TriviaStateService } from './services/trivia-state.service';
 import { RouterModule } from '@angular/router';
+import { LobbyComponent } from './components/lobby/lobby.component';
+import { JoinLobbyComponent } from './components/join-lobby/join-lobby.component';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
@@ -26,6 +28,8 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     SplashComponent,
     //TriviaComponents
     CreateLobbyComponent,
+    LobbyComponent,
+    JoinLobbyComponent,
     TestComponent, // todo remove this when finished
   ],
   imports: [

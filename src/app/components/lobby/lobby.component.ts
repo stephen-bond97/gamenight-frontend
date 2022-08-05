@@ -8,11 +8,23 @@ import { TriviaStateService } from 'src/app/services/trivia-state.service';
 })
 export class LobbyComponent implements OnInit {
   public LobbyCode = "";
+  public ShowLobbyCode = false;
 
   constructor(private triviaState: TriviaStateService) { }
 
   ngOnInit(): void {
     this.LobbyCode = this.triviaState.LobbyCode;
+    if (this.triviaState.IsHost == true) {
+      this.ShowLobbyCode = true;
+    }
+  }
+
+  public copyToClipboard(input: HTMLInputElement, event: MouseEvent): void {
+    event.stopPropagation();
+
+    input.select();
+    document.execCommand('copy');
+    input.setSelectionRange(0, 0);
   }
 
 }
