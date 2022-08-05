@@ -15,6 +15,8 @@ import { TriviaService } from './services/trivia.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateLobbyComponent } from './components/create-lobby/create-lobby.component';
 import { AppService } from './services/app.service';
+import { TriviaStateService } from './services/trivia-state.service';
+import { RouterModule } from '@angular/router';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
@@ -32,10 +34,11 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     SocketIoModule.forRoot(config),
     FormsModule,
     AppRoutingModule,
+    RouterModule,
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [SocketService, TriviaService, AppService],
+  providers: [SocketService, TriviaService, AppService, TriviaStateService],
   bootstrap: [ShellComponent]
 })
 export class AppModule { }

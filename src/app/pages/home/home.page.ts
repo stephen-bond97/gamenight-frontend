@@ -11,28 +11,8 @@ export class HomePage implements OnInit {
   public LobbyState = "";
 
   constructor(private socketService: SocketService) {
-    this.socketService.LobbyCreated.subscribe((lobbyCode) => this.handleLobbyCreated(lobbyCode));
-    this.socketService.LobbyJoined.subscribe(() => this.handleLobbyJoined());
   }
 
   ngOnInit(): void {
   }
-
-  public HandleCreateLobbyClick(): void {
-    this.socketService.CreateLobby();
-  }
-
-  public HandleJoinLobbyClick(): void {
-    this.socketService.JoinLobby(this.LobbyCode);
-  }
-
-  private handleLobbyCreated(lobbyCode: string): void {
-    this.LobbyCode = lobbyCode;
-    console.log(lobbyCode);
-  }
-  
-  private handleLobbyJoined(): void {
-    this.LobbyState = "Lobby joined";
-  }
-
 }

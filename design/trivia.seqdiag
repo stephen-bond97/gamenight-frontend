@@ -7,7 +7,9 @@ participant TriviaGameState
 Host->Host:Clicks "create lobby"
 Host->socketServer:Sends create-lobby request
 Host<--socketServer:Returns lobby code
-Host->Player:Click and drag to create a request or\ntype it in the source area to the left
-Host<--Player:drag to move
-note over Player,socketServer:Click Help menu for **instructions** and **examples**
-Player->(3)socketServer:non-instantaneous message
+Host->Player:Shares lobby code with player via IM
+Player->Player:Enter Lobby Code
+Player->socketServer:Send lobby join request to server
+socketServer-->Player:Sends lobby-joined message
+Player->Host:Send share-information message that player has joined
+Host->TriviaGameState:Send lobby-synchronised message
