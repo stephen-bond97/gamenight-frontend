@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Subject } from 'rxjs';
+import { InformationContainer } from 'src/typings/informationContainer';
+import { InformationType } from 'src/typings/informationType.enum';
 
 enum Request {
   CreateLobby = 'create-lobby',
@@ -21,17 +23,18 @@ enum Response {
 export class SocketService {
   public LobbyCreated = new Subject<string>();
   public LobbyJoined = new Subject<void>();
-  public InformationShared = new Subject<string>();
+  public InformationShared = new Subject<InformationContainer>();
   public LobbySynchronised = new Subject<string>();
   public LobbyClosed = new Subject<void>();
 
   public LobbyCode = "";
+  private isHost = false;
+  public get IsHost(): boolean { return this.isHost; }
 
   public constructor(private socket: Socket) {
     this.socket.on(Response.LobbyCreated, (lobbyCode: string) => this.handleLobbyCreateResponse(lobbyCode));
     this.socket.on(Response.LobbyJoined, () => this.handleLobbyJoinResponse());
     this.socket.on(Response.LobbySynchronised, (data: string) => this.handleLobbySyncResponse(data));
-    this.socket.on(Response.InformationShared, (data: string) => this.handleInformationSharedResponse(data))
     this.socket.on(Response.LobbyClosed, () => this.handleLobbyCloseResponse());
   }
 
@@ -44,10 +47,6 @@ export class SocketService {
 
   private handleLobbyJoinResponse(): void {
     this.LobbyJoined.next();
-  }
-
-  private handleInformationSharedResponse(data: string) {
-    this.InformationShared.next(data);
   }
 
   private handleLobbySyncResponse(data: string): void {
@@ -70,12 +69,22 @@ export class SocketService {
     this.socket.emit(Request.JoinLobby, lobbyCode);
   }
 
-  public ShareInformation(data: string): void {
-    this.socket.emit(Request.ShareInformation, data);
+  public ShareInformation(data: InformationContainer): void {
+    let dataString = JSON.stringify(data);
+    this.socket.emit(Request.ShareInformation, dataString);
   }
 
   public SynchroniseLobby(data: string): void {
     this.socket.emit(Request.SynchroniseLobby, data);
+  }
+
+  public SetHost(): void {
+    this.isHost = true;
+
+    this.socket.on(Response.InformationShared, (data: string) => {
+      let informationContainer: InformationContainer = JSON.parse(data);
+      this.InformationShared.next(informationContainer);
+    });
   }
 
   //#endregion

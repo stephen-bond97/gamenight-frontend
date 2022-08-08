@@ -10,7 +10,6 @@ import { SocketService } from './services/socket.service';
 import { ShellComponent } from './shell/shell.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SplashComponent } from './components/splash/splash.component';
-import { TestComponent } from './components/test/test.component';
 import { TriviaService } from './services/trivia.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateLobbyComponent } from './components/create-lobby/create-lobby.component';
@@ -29,8 +28,7 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     //TriviaComponents
     CreateLobbyComponent,
     LobbyComponent,
-    JoinLobbyComponent,
-    TestComponent, // todo remove this when finished
+    JoinLobbyComponent
   ],
   imports: [
     BrowserModule,
