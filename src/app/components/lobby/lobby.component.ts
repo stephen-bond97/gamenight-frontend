@@ -20,7 +20,7 @@ export class LobbyComponent implements OnInit {
 
   ngOnInit(): void {
     this.LobbyCode = this.triviaState.LobbyCode;
-    if (this.socketService.IsHost == true) {
+    if (this.socketService.IsHost == true && this.appService.PlayerInfo ) {
       this.ShowLobbyCode = true;
       this.triviaState.Players.push(this.appService.PlayerInfo);
 

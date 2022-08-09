@@ -1,0 +1,19 @@
+<mat-form-field appearance="fill">
+    <mat-label>Enter your nickname</mat-label>
+    <input matInput id="username" name="username" [(ngModel)]="Nickname" #name="ngModel" required minlength="3"
+        maxlength="12">
+    <mat-error *ngIf="name.errors?.['required']">
+        Name is required.
+    </mat-error>
+    <mat-error *ngIf="name.errors?.['minlength']">
+        Name must be at least 3 characters long.
+    </mat-error>
+</mat-form-field>
+
+<div class="avatar-container">
+    <div *ngFor="let avatar of AvatarList" (click)="HandleAvatarClick(avatar)" [class.selected]="IsAvatarSelected(avatar)">
+        <img src="assets/avatars/{{avatar}}.png" alt="{{avatar}}">
+    </div>
+</div>
+  
+<button mat-flat-button color="primary" class="profileButton" (click)="SaveProfile()" [disabled]="name.errors || !Avatar">Save Profile</button>

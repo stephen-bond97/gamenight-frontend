@@ -35,7 +35,7 @@ const routes: Routes = [{
 }];
 
 @NgModule({
-  declarations: [HomePage, TriviaPage],
+  declarations: [],
   imports: [RouterModule.forRoot(routes), FormsModule],
   exports: [RouterModule]
 })

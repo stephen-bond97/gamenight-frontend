@@ -7,15 +7,15 @@ import { Component, HostBinding, OnInit } from '@angular/core';
 })
 export class SplashComponent implements OnInit {
 
-  @HostBinding('class.full-screen')
-  public ShowFullscreen = true;
+  @HostBinding('class.minimised')
+  public Minimised = false;
 
   constructor() { }
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.ShowFullscreen = false;
-    }, 3000);
+      this.Minimised = true;
+    }, 2000);
   }
 
 }

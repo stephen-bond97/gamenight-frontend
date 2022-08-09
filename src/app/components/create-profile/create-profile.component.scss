@@ -1,0 +1,49 @@
+:host {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    z-index: 100;
+
+    justify-content: center;
+}
+
+.profileButton {
+    margin-top: 0.5rem;
+}
+
+.avatar-container {
+    display: flex;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 15rem;
+
+    div {
+        border: 1px solid rgba(255, 255, 255, 0);
+        border-radius: 10px;
+
+        &:hover {
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        max-width: 3rem;
+        padding: .5rem;
+
+        &.selected {
+            border: 1px solid #ffff00;
+            border-radius: 10px;
+        }
+
+        img {
+            height: 3rem;
+            width: 3rem;
+        }
+    }
+}

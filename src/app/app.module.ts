@@ -18,6 +18,10 @@ import { TriviaStateService } from './services/trivia-state.service';
 import { RouterModule } from '@angular/router';
 import { LobbyComponent } from './components/lobby/lobby.component';
 import { JoinLobbyComponent } from './components/join-lobby/join-lobby.component';
+import { CreateProfileComponent } from './components/create-profile/create-profile.component';
+import { StorageService } from './services/storage.service';
+import { HomePage } from './pages/home/home.page';
+import { TriviaPage } from './pages/trivia/trivia.page';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
@@ -25,10 +29,16 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
   declarations: [
     ShellComponent,
     SplashComponent,
-    //TriviaComponents
+
+    // TriviaComponents
     CreateLobbyComponent,
     LobbyComponent,
-    JoinLobbyComponent
+    JoinLobbyComponent,
+    CreateProfileComponent,
+    
+    // Pages
+    HomePage,
+    TriviaPage
   ],
   imports: [
     BrowserModule,
@@ -40,7 +50,7 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [SocketService, TriviaService, AppService, TriviaStateService],
+  providers: [SocketService, TriviaService, AppService, TriviaStateService, StorageService],
   bootstrap: [ShellComponent]
 })
 export class AppModule { }
