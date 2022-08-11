@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CreateLobbyComponent } from './components/create-lobby/create-lobby.component';
 import { JoinLobbyComponent } from './components/join-lobby/join-lobby.component';
 import { LobbyComponent } from './components/lobby/lobby.component';
+import { TriviaGameComponent } from './components/trivia-game/trivia-game.component';
 import { TriviaLobbyGuard } from './guards/trivia-lobby.guard';
 import { HomePage } from './pages/home/home.page';
 import { TriviaPage } from './pages/trivia/trivia.page';
@@ -27,6 +28,10 @@ const routes: Routes = [{
   }, {
     path: "join-lobby/:LobbyCode",
     component: JoinLobbyComponent
+  }, {
+    path: "game",
+    component: TriviaGameComponent,
+    canActivate: [TriviaLobbyGuard]
   }, {
     path: "lobby",
     component: LobbyComponent,

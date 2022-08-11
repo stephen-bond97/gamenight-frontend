@@ -1,10 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { TriviaQuestion } from "src/typings/triviaQuestion";
 
 @Injectable()
 export class TriviaService {
-    private url = "https://sbond-gamenight.herokuapp.com/trivia/question";
+    // private url = "https://sbond-gamenight.herokuapp.com/trivia/question";
+    private url = "http://localhost:3000/trivia/question";
 
     /**
      *
@@ -13,9 +15,9 @@ export class TriviaService {
         
     }
 
-    public GetQuestions(category: any): Observable<any> {
+    public GetQuestions(category: any): Observable<TriviaQuestion> {
         return this.request({
-            category: category
+            category: category,
         });
     }
 

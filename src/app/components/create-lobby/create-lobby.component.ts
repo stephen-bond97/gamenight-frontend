@@ -30,8 +30,6 @@ export class CreateLobbyComponent implements OnInit {
   public categories = Object.values(Category);
 
   ngOnInit(): void {
-    // this.trivia.GetQuestions(this.selectedCategory)
-    // .subscribe((data: any) => console.log(data));
   }
 
   public HandleCreateLobbyClick(): void {

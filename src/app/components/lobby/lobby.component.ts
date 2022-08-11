@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/services/app.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { TriviaStateService } from 'src/app/services/trivia-state.service';
@@ -18,7 +19,12 @@ export class LobbyComponent implements OnInit {
   public get Players(): PlayerInfo[] { return this.triviaState.Players; }
   public get IsHost(): boolean { return this.socketService.IsHost; }
 
-  constructor(private triviaState: TriviaStateService, private socketService: SocketService, private appService: AppService) { }
+  constructor(
+    private triviaState: TriviaStateService, 
+    private socketService: SocketService, 
+    private appService: AppService, 
+    private router: Router, 
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.LobbyCode = this.triviaState.LobbyCode;
@@ -59,6 +65,11 @@ export class LobbyComponent implements OnInit {
     if (syncContainer.SynchronisationType == SynchronisationType.Players) {
       this.triviaState.Players.length = 0;
       this.triviaState.Players.push(...syncContainer.Data);
+    }
+
+    if (syncContainer.SynchronisationType == SynchronisationType.GameStarted) {
+      this.triviaState.CurrentQuestion = syncContainer.Data;
+      this.router.navigate(["../game"], { relativeTo: this.route });
     }
   }
 }

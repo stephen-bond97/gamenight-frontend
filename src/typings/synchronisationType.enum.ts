@@ -1,3 +1,5 @@
 export enum SynchronisationType {
-    Players
+    Players,
+    Question,
+    GameStarted
 }

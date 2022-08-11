@@ -22,6 +22,7 @@ import { CreateProfileComponent } from './components/create-profile/create-profi
 import { StorageService } from './services/storage.service';
 import { HomePage } from './pages/home/home.page';
 import { TriviaPage } from './pages/trivia/trivia.page';
+import { TriviaGameComponent } from './components/trivia-game/trivia-game.component';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
@@ -35,6 +36,7 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     LobbyComponent,
     JoinLobbyComponent,
     CreateProfileComponent,
+    TriviaGameComponent,
     
     // Pages
     HomePage,

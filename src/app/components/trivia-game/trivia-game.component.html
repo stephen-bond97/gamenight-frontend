@@ -1,1 +1,8 @@
-<p>trivia-game works!</p>
+<div *ngIf="CurrentQuestion">
+    {{ CurrentQuestion.question }}
+    <div>
+        <div *ngFor="let answer of CurrentQuestion.incorrect_answers">
+            {{ answer }}
+        </div>
+    </div>
+</div>
