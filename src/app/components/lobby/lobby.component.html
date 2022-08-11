@@ -1,4 +1,4 @@
-<div *ngIf="ShowLobbyCode">
+<div *ngIf="IsHost">
     <input #clipboardInput [value]="LobbyCode" readonly style="opacity: 0; position: fixed; top: 0; left: 0" />
 
     <mat-card>
@@ -19,4 +19,8 @@
     <div *ngFor="let player of Players">
         {{player.Name}} has joined the game
     </div>
+</div>
+
+<div *ngIf="IsHost">
+    <button mat-raised-button color="accent" [disabled]="Players.length == 1" routerLink="">Start Game</button>
 </div>

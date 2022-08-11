@@ -3,6 +3,7 @@ import { Socket } from 'ngx-socket-io';
 import { Subject } from 'rxjs';
 import { InformationContainer } from 'src/typings/informationContainer';
 import { InformationType } from 'src/typings/informationType.enum';
+import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
 
 enum Request {
   CreateLobby = 'create-lobby',
@@ -24,7 +25,7 @@ export class SocketService {
   public LobbyCreated = new Subject<string>();
   public LobbyJoined = new Subject<void>();
   public InformationShared = new Subject<InformationContainer>();
-  public LobbySynchronised = new Subject<string>();
+  public LobbySynchronised = new Subject<SynchroniseContainer>();
   public LobbyClosed = new Subject<void>();
 
   public LobbyCode = "";
@@ -50,7 +51,8 @@ export class SocketService {
   }
 
   private handleLobbySyncResponse(data: string): void {
-    this.LobbySynchronised.next(data);
+    let syncContainer: SynchroniseContainer = JSON.parse(data);
+    this.LobbySynchronised.next(syncContainer);
   }
 
   private handleLobbyCloseResponse(): void {
@@ -74,8 +76,9 @@ export class SocketService {
     this.socket.emit(Request.ShareInformation, dataString);
   }
 
-  public SynchroniseLobby(data: string): void {
-    this.socket.emit(Request.SynchroniseLobby, data);
+  public SynchroniseLobby(data: SynchroniseContainer): void {
+    let dataString = JSON.stringify(data);
+    this.socket.emit(Request.SynchroniseLobby, dataString);
   }
 
   public SetHost(): void {

@@ -5,6 +5,8 @@ import { TriviaStateService } from 'src/app/services/trivia-state.service';
 import { InformationContainer } from 'src/typings/informationContainer';
 import { InformationType } from 'src/typings/informationType.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
+import { SynchronisationType } from 'src/typings/synchronisationType.enum';
+import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
 
 @Component({
   selector: 'app-lobby',
@@ -13,18 +15,21 @@ import { PlayerInfo } from 'src/typings/playerInfo';
 })
 export class LobbyComponent implements OnInit {
   public LobbyCode = "";
-  public ShowLobbyCode = false;
   public get Players(): PlayerInfo[] { return this.triviaState.Players; }
+  public get IsHost(): boolean { return this.socketService.IsHost; }
 
   constructor(private triviaState: TriviaStateService, private socketService: SocketService, private appService: AppService) { }
 
   ngOnInit(): void {
     this.LobbyCode = this.triviaState.LobbyCode;
+
     if (this.socketService.IsHost == true && this.appService.PlayerInfo ) {
-      this.ShowLobbyCode = true;
       this.triviaState.Players.push(this.appService.PlayerInfo);
 
       this.socketService.InformationShared.subscribe((infoContainer) => this.handleInformationShared(infoContainer));
+    }
+    else {
+      this.socketService.LobbySynchronised.subscribe((syncContainer) => this.handleSynchronisation(syncContainer));
     }
   }
 
@@ -39,6 +44,21 @@ export class LobbyComponent implements OnInit {
   private handleInformationShared(infoContainer: InformationContainer): void {
     if (infoContainer.InformationType == InformationType.PlayerInfo) {
       this.triviaState.Players.push(infoContainer.Data);
+
+      // host raises synchronisation event with rest of lobby
+      let syncContainer: SynchroniseContainer = {
+        SynchronisationType: SynchronisationType.Players,
+        Data: this.triviaState.Players
+      };
+
+      this.socketService.SynchroniseLobby(syncContainer);
+    }
+  }
+
+  private handleSynchronisation(syncContainer: SynchroniseContainer): void {
+    if (syncContainer.SynchronisationType == SynchronisationType.Players) {
+      this.triviaState.Players.length = 0;
+      this.triviaState.Players.push(...syncContainer.Data);
     }
   }
 }
