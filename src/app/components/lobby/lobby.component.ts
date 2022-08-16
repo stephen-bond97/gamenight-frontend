@@ -8,7 +8,9 @@ import { InformationType } from 'src/typings/informationType.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
 import { SynchronisationType } from 'src/typings/synchronisationType.enum';
 import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
@@ -32,10 +34,14 @@ export class LobbyComponent implements OnInit {
     if (this.socketService.IsHost == true && this.appService.PlayerInfo ) {
       this.triviaState.Players.push(this.appService.PlayerInfo);
 
-      this.socketService.InformationShared.subscribe((infoContainer) => this.handleInformationShared(infoContainer));
+      this.socketService.InformationShared
+        .pipe(untilDestroyed(this))
+        .subscribe((infoContainer) => this.handleInformationShared(infoContainer));
     }
     else {
-      this.socketService.LobbySynchronised.subscribe((syncContainer) => this.handleSynchronisation(syncContainer));
+      this.socketService.LobbySynchronised
+        .pipe(untilDestroyed(this))
+        .subscribe((syncContainer) => this.handleSynchronisation(syncContainer));
     }
   }
 
@@ -68,6 +74,7 @@ export class LobbyComponent implements OnInit {
     }
 
     if (syncContainer.SynchronisationType == SynchronisationType.GameStarted) {
+      console.log("doin shit");
       this.triviaState.CurrentQuestion = syncContainer.Data;
       this.router.navigate(["../game"], { relativeTo: this.route });
     }

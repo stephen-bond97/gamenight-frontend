@@ -32,7 +32,8 @@ export class CreateProfileComponent implements OnInit {
   public SaveProfile(): void {
     let profile: PlayerInfo = {
       Name: this.Nickname,
-      Avatar: this.Avatar
+      Avatar: this.Avatar,
+      Score: 0
     };
     this.appService.UpdateProfile(profile);
     this.dialogRef.close();

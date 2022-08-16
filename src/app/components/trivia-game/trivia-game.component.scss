@@ -1,0 +1,48 @@
+@import 'src/styles/material.palettes.scss';
+
+:host {
+    max-width: 50rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.question {
+    width: 100%;
+}
+
+mat-progress-bar {
+    margin-bottom: .5rem;
+}
+
+.answer-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+
+    > div {
+        position: relative;
+        
+        .avatar-container {
+            position: absolute;
+            right: 0;
+            top: 1.25rem;
+
+            img {
+                height: 2rem;
+                width: 2rem;
+                margin-left: .25rem;
+            }
+        }
+    }
+
+    button {
+        width: 100%;
+        margin-bottom: 1.2rem;
+        color: #fff !important;
+
+        &.correct {
+            background-color: map-get($sb-palette-green, 500) !important;
+        }
+    }
+}

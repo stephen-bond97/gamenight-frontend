@@ -12,13 +12,4 @@
     </mat-select>
 </mat-form-field>
 
-<mat-form-field appearance="fill">
-    <mat-label>Category</mat-label>
-    <mat-select [(ngModel)]="selectedCategory" name="Category">
-       <mat-option *ngFor="let category of categories" [value]="selectedCategory">
-        {{Category2LabelMapping[category]}}
-       </mat-option>
-    </mat-select>
-</mat-form-field>
-
 <button mat-flat-button color="accent" (click)="HandleCreateLobbyClick()">Create Lobby</button>

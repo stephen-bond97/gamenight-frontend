@@ -39,6 +39,7 @@ export class JoinLobbyComponent implements OnInit {
   }
 
   public HandleJoinLobbyClick(): void {
+    this.appService.SetLoading(true);
     this.socketService.JoinLobby(this.LobbyCode);
   }
 
@@ -54,6 +55,7 @@ export class JoinLobbyComponent implements OnInit {
     // send information with information container
     this.socketService.ShareInformation(infoContainer);
 
+    this.appService.SetLoading(false);
     this.router.navigate(["../lobby"], {relativeTo: this.route})
   }
 
