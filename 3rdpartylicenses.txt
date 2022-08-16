@@ -66,6 +66,9 @@ MIT
 @angular/router
 MIT
 
+@ngneat/until-destroy
+MIT
+
 @socket.io/component-emitter
 MIT
 (The MIT License)
