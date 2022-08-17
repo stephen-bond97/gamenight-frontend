@@ -51,16 +51,12 @@ export class TriviaGameComponent implements OnInit {
     private appService: AppService) { }
 
   ngOnInit(): void {
-    if (this.CurrentQuestion) {
-      this.shuffleAnswers(this.CurrentQuestion);
-      this.beginTimer();
-    }
-
     if (this.socketService.IsHost) {
       this.socketService.InformationShared.subscribe((infoContainer) => this.handleInformationShared(infoContainer));
       this.ShowCategorySelector = true;
     }
     else {
+      this.reset();
       this.socketService.LobbySynchronised.subscribe((syncContainer) => this.handleSynchronisation(syncContainer));
     }
   }
@@ -129,6 +125,14 @@ export class TriviaGameComponent implements OnInit {
     this.triviaService.GetQuestions(this.SelectedCategory).subscribe((question) => this.handleQuestionReceived(question));
   }
 
+  private reset(): void {
+    this.shuffleAnswers();
+    this.beginTimer();
+
+    this.AnswerSelected = false;
+    this.PlayerChoices.length = 0;
+  }
+
   private beginTimer(): void {
     this.timer = this.TIME_FOR_QUESTION;
 
@@ -154,17 +158,19 @@ export class TriviaGameComponent implements OnInit {
 
   private handleQuestionReceived(question: TriviaQuestion): void {
     this.triviaState.CurrentQuestion = question;
-    this.shuffleAnswers(question);
-    this.beginTimer();
+    let syncType = SynchronisationType.GameStarted;
 
-    if (this.socketService.IsHost) {
-      let syncContainer: SynchroniseContainer = {
-        SynchronisationType: SynchronisationType.GameStarted,
-        // todo raise a different event type after game has already started
-        Data: question
-      }
-      this.socketService.SynchroniseLobby(syncContainer);
+    if (this.PlayerChoices.length > 0) {
+      syncType = SynchronisationType.NewQuestion;
     }
+
+    this.reset();
+
+    let syncContainer: SynchroniseContainer = {
+      SynchronisationType: syncType,
+      Data: question
+    };
+    this.socketService.SynchroniseLobby(syncContainer);
   }
 
   private handleInformationShared(infoContainer: InformationContainer): void {
@@ -195,9 +201,19 @@ export class TriviaGameComponent implements OnInit {
       this.PlayerChoices.length = 0;
       this.PlayerChoices.push(...syncContainer.Data);
     }
+
+    if (syncContainer.SynchronisationType == SynchronisationType.NewQuestion) {
+      this.triviaState.CurrentQuestion = syncContainer.Data;
+      this.reset();
+    }
   }
 
-  private shuffleAnswers(question: TriviaQuestion): void {
+  private shuffleAnswers(): void {
+    if (!this.CurrentQuestion)
+      return;
+
+    let question = this.CurrentQuestion;
+
     let allAnswers = [...question.incorrect_answers, question.correct_answer];
     let shuffled = this.shuffle(allAnswers);
 

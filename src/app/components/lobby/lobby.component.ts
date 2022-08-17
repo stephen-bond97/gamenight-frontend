@@ -74,7 +74,6 @@ export class LobbyComponent implements OnInit {
     }
 
     if (syncContainer.SynchronisationType == SynchronisationType.GameStarted) {
-      console.log("doin shit");
       this.triviaState.CurrentQuestion = syncContainer.Data;
       this.router.navigate(["../game"], { relativeTo: this.route });
     }
