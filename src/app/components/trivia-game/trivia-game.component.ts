@@ -9,6 +9,7 @@ import { SynchronisationType } from 'src/typings/synchronisationType.enum';
 import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
 import { TriviaAnswerChoice } from 'src/typings/triviaAnswerChoice';
 import { TriviaQuestion } from 'src/typings/triviaQuestion';
+import { GameInformation } from 'src/typings/gameInformation';
 import { Category, Category2LabelMapping } from 'src/typings/category.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
 
@@ -20,6 +21,7 @@ import { PlayerInfo } from 'src/typings/playerInfo';
 export class TriviaGameComponent implements OnInit {
 
   private readonly TIME_FOR_QUESTION = 10;
+  private readonly QUESTIONS_PER_ROUND = 5;
 
   public get CurrentQuestion(): TriviaQuestion | null {
     return this.triviaState.CurrentQuestion;
@@ -43,6 +45,8 @@ export class TriviaGameComponent implements OnInit {
   public ShowCategorySelector = false;
 
   private timer = this.TIME_FOR_QUESTION;
+  private questionsCompleted = 0;
+  private roundsCompleted = 0;
 
   public constructor(
     private triviaService: TriviaService,
@@ -145,7 +149,18 @@ export class TriviaGameComponent implements OnInit {
         if (this.socketService.IsHost) {
           // wait 5 seconds then get a new question
           setTimeout(() => {
-            this.getNewQuestion();
+            if (this.questionsCompleted < this.QUESTIONS_PER_ROUND) {
+              this.getNewQuestion();
+            }
+            else {
+              this.roundsCompleted++;
+              this.questionsCompleted = 0;
+
+              if (this.roundsCompleted <= this.triviaState.NumberOfRounds) {
+                this.ShowCategorySelector = true;
+              }
+            }
+
           }, 5000);
         }
 
@@ -158,6 +173,8 @@ export class TriviaGameComponent implements OnInit {
 
   private handleQuestionReceived(question: TriviaQuestion): void {
     this.triviaState.CurrentQuestion = question;
+    this.questionsCompleted++;
+
     let syncType = SynchronisationType.GameStarted;
 
     if (this.PlayerChoices.length > 0) {
@@ -166,11 +183,28 @@ export class TriviaGameComponent implements OnInit {
 
     this.reset();
 
-    let syncContainer: SynchroniseContainer = {
+    let gameStartContainer: SynchroniseContainer = {
       SynchronisationType: syncType,
       Data: question
     };
-    this.socketService.SynchroniseLobby(syncContainer);
+    this.socketService.SynchroniseLobby(gameStartContainer);
+
+    this.synchroniseGameInformation();
+  }
+
+  private synchroniseGameInformation() {
+    let gameInfoContainer: GameInformation = {
+      TotalRounds: this.triviaState.NumberOfRounds,
+      RoundsRemaining: this.triviaState.NumberOfRounds - this.roundsCompleted,
+      CurrentCategory: this.SelectedCategory
+    };
+
+    let sc: SynchroniseContainer = {
+      SynchronisationType: SynchronisationType.GameInformation,
+      Data: gameInfoContainer
+    };
+
+    this.socketService.SynchroniseLobby(sc);
   }
 
   private handleInformationShared(infoContainer: InformationContainer): void {

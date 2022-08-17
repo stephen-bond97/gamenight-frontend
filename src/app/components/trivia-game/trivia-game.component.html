@@ -1,3 +1,13 @@
+<div class="leaderboard-container">
+    <div class="leaderboard">
+        <div *ngFor="let player of Players">
+            <img src="assets/avatars/{{player.Avatar}}.png">
+            <span class="nameplate">{{player.Name}}</span>
+            <span class="score" *ngIf="TimeRemaining <= 0">{{player.Score}}</span>
+        </div>
+    </div>
+</div>
+
 <ng-container *ngIf="ShowCategorySelector">
     <mat-form-field appearance="fill">
         <mat-label>Category</mat-label>
@@ -10,8 +20,8 @@
     <button mat-flat-button (click)="HandleCategorySelected()" [disabled]="!SelectedCategory">Select Category</button>
 </ng-container>
 
-<ng-container *ngIf="CurrentQuestion">
-    <mat-progress-bar mode="determinate" [value]="TimeRemaining"></mat-progress-bar>
+<ng-container *ngIf="CurrentQuestion && !ShowCategorySelector">
+    <mat-progress-bar *ngIf="TimeRemaining > 0" mode="determinate" [value]="TimeRemaining"></mat-progress-bar>
     <h1 [innerHTML]="CurrentQuestion.question" class="question"></h1>
     <div class="answer-container">
         <div *ngFor="let answer of Answers">
@@ -30,5 +40,3 @@
         </div>
     </div>
 </ng-container>
-
-<div class="leaderboard" *ngFor="let player of Players">{{player.Name}} {{player.Avatar}} {{player.Score}}</div>

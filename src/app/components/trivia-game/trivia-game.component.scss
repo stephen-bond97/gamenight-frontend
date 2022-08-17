@@ -6,6 +6,12 @@
     flex-direction: column;
 }
 
+@media (min-width: 40rem) {
+    :host {
+        width: 30rem;
+    }
+}
+
 .question {
     width: 100%;
 }
@@ -20,9 +26,9 @@ mat-progress-bar {
     flex-grow: 1;
     width: 100%;
 
-    > div {
+    >div {
         position: relative;
-        
+
         .avatar-container {
             position: absolute;
             right: 0;
@@ -45,4 +51,45 @@ mat-progress-bar {
             background-color: map-get($sb-palette-green, 500) !important;
         }
     }
+}
+
+.leaderboard-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.leaderboard {
+    width: 10rem;
+
+    > div {
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        display: flex;
+        align-items: center;
+        border-radius: 1rem;
+        position: relative;
+        height: 1.5rem;
+        margin-bottom: 2rem;
+
+        > img {
+            height: 2rem;
+            position: absolute;
+            left: -1rem;
+        }
+
+        > span {
+            &.nameplate {
+                margin-left: 1.5rem;
+                font-size: larger;
+                flex-grow: 1;
+            }
+
+            &.score {
+                margin-right: .5rem;
+            }
+        }
+
+        > div {
+            display: inline-block;
+        }
+    }    
 }

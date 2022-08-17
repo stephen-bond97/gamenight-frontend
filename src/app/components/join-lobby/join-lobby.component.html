@@ -2,4 +2,4 @@
     <mat-label>Your Lobby Code</mat-label>
     <input matInput [(ngModel)]="LobbyCode"/>
 </mat-form-field>
-<button mat-flat-button (click)="HandleJoinLobbyClick()">Join Lobby</button>
+<button mat-flat-button (click)="HandleJoinLobbyClick()" [disabled]="!LobbyCode">Join Lobby</button>

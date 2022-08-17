@@ -41,6 +41,7 @@ export class CreateLobbyComponent implements OnInit {
     this.LobbyCode = lobbyCode;
     this.appService.SetLoading(false);
     this.triviaStateService.LobbyCode = lobbyCode;
+    this.triviaStateService.NumberOfRounds = this.numberOfRounds;
     this.socketService.SetHost();
     this.router.navigate(["../lobby"], { relativeTo: this.route });
   }
