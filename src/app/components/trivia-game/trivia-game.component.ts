@@ -147,19 +147,12 @@ export class TriviaGameComponent implements OnInit {
         clearInterval(interval);
 
         if (this.socketService.IsHost) {
+    
+          this.synchronisePlayers();
+
           // wait 5 seconds then get a new question
           setTimeout(() => {
-            if (this.questionsCompleted < this.QUESTIONS_PER_ROUND) {
-              this.getNewQuestion();
-            }
-            else {
-              this.roundsCompleted++;
-              this.questionsCompleted = 0;
-
-              if (this.roundsCompleted <= this.triviaState.NumberOfRounds) {
-                this.ShowCategorySelector = true;
-              }
-            }
+            this.progressRounds();
 
           }, 5000);
         }
@@ -169,6 +162,23 @@ export class TriviaGameComponent implements OnInit {
         }
       }
     }, 1000);
+  }
+
+  private progressRounds() {
+    if (this.questionsCompleted < this.QUESTIONS_PER_ROUND) {
+      this.getNewQuestion();
+    }
+    else {
+      this.roundsCompleted++;
+      this.questionsCompleted = 0;
+
+      if (this.roundsCompleted < this.triviaState.NumberOfRounds) {
+        this.ShowCategorySelector = true;
+      }
+      else {
+        console.log("game over");
+      }
+    }
   }
 
   private handleQuestionReceived(question: TriviaQuestion): void {
@@ -207,6 +217,15 @@ export class TriviaGameComponent implements OnInit {
     this.socketService.SynchroniseLobby(sc);
   }
 
+  private synchronisePlayers(): void {
+    let syncContainer: SynchroniseContainer = {
+      SynchronisationType: SynchronisationType.Players,
+      Data: this.triviaState.Players
+    };
+
+    this.socketService.SynchroniseLobby(syncContainer);
+  }
+
   private handleInformationShared(infoContainer: InformationContainer): void {
     if (infoContainer.InformationType == InformationType.TriviaAnswerChoice) {
 
@@ -230,15 +249,30 @@ export class TriviaGameComponent implements OnInit {
     }
   }
 
+  /**
+   * Players handlng the host synchronisation event
+   * @param syncContainer 
+   */
   private handleSynchronisation(syncContainer: SynchroniseContainer): void {
-    if (syncContainer.SynchronisationType == SynchronisationType.TriviaAnswerChoices) {
-      this.PlayerChoices.length = 0;
-      this.PlayerChoices.push(...syncContainer.Data);
-    }
+    switch (syncContainer.SynchronisationType) {
+      case SynchronisationType.TriviaAnswerChoices:
+        this.PlayerChoices.length = 0;
+        this.PlayerChoices.push(...syncContainer.Data);
+        break;
 
-    if (syncContainer.SynchronisationType == SynchronisationType.NewQuestion) {
-      this.triviaState.CurrentQuestion = syncContainer.Data;
-      this.reset();
+      case SynchronisationType.Players:
+        this.triviaState.Players.length = 0;
+        this.triviaState.Players.push(...syncContainer.Data);
+        console.log(syncContainer);
+        break;
+      
+      case SynchronisationType.NewQuestion:
+        this.triviaState.CurrentQuestion = syncContainer.Data;
+        this.reset();
+        break;
+
+      default:
+        break;
     }
   }
 

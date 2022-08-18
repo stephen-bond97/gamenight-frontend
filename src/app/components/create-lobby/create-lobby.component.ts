@@ -13,7 +13,7 @@ import { Category, Category2LabelMapping } from 'src/typings/category.enum';
 })
 export class CreateLobbyComponent implements OnInit {
   public LobbyCode = "";
-  public numberOfRounds = 0;
+  public numberOfRounds = 1;
   public selectedCategory = "";
   public Category2LabelMapping = Category2LabelMapping;
 
