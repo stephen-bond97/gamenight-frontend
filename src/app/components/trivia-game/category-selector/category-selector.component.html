@@ -1,0 +1,9 @@
+<mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <mat-select [(ngModel)]="SelectedCategory" name="Category">
+        <mat-option *ngFor="let category of Categories" [value]="category">
+            {{Category2LabelMapping[category]}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<button mat-flat-button (click)="HandleCategorySelected()" [disabled]="!SelectedCategory">Select Category</button>

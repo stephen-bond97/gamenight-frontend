@@ -1,42 +1,28 @@
-<div class="leaderboard-container">
-    <div class="leaderboard">
-        <div *ngFor="let player of Players">
-            <img src="assets/avatars/{{player.Avatar}}.png">
-            <span class="nameplate">{{player.Name}}</span>
-            <span class="score" *ngIf="TimeRemaining <= 0">{{player.Score}}</span>
-        </div>
-    </div>
-</div>
+<app-leaderboard [class.centered]="RoundsCompleted >= NumberOfRounds"></app-leaderboard>
+<button mat-raised-button *ngIf="RoundsCompleted >= NumberOfRounds" routerLink="/home">Go Home</button>
 
-<ng-container *ngIf="ShowCategorySelector">
-    <mat-form-field appearance="fill">
-        <mat-label>Category</mat-label>
-        <mat-select [(ngModel)]="SelectedCategory" name="Category">
-            <mat-option *ngFor="let category of Categories" [value]="category">
-                {{Category2LabelMapping[category]}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <button mat-flat-button (click)="HandleCategorySelected()" [disabled]="!SelectedCategory">Select Category</button>
-</ng-container>
+<ng-container *ngIf="RoundsCompleted < NumberOfRounds">
 
-<ng-container *ngIf="CurrentQuestion && !ShowCategorySelector">
-    <mat-progress-bar *ngIf="TimeRemaining > 0" mode="determinate" [value]="TimeRemaining"></mat-progress-bar>
-    <h1 [innerHTML]="CurrentQuestion.question" class="question"></h1>
-    <div class="answer-container">
-        <div *ngFor="let answer of Answers">
+    <app-category-selector *ngIf="ShowCategorySelector" (CategorySelected)="HandleCategorySelected()"></app-category-selector>
 
-            <button color="accent" mat-raised-button 
-                (click)="HandleSelectedAnswer(answer)"
-                [class.correct]="CheckAnswer(answer)"
-                [disabled]="AnswerSelected"
-                [innerHTML]="answer">
-            </button>
+    <ng-container *ngIf="CurrentQuestion && !ShowCategorySelector">
+        <mat-progress-bar *ngIf="TimeRemaining > 0" mode="determinate" [value]="TimeRemaining"></mat-progress-bar>
+        <h1 [innerHTML]="CurrentQuestion.question" class="question"></h1>
+        <div class="answer-container">
+            <div *ngFor="let answer of Answers">
 
-            <div class="avatar-container">
-                <img *ngFor="let player of GetPlayerSelections(answer)" src="assets/avatars/{{player.PlayerInfo.Avatar}}.png">
+                <button color="accent" mat-raised-button 
+                    (click)="HandleAnswerSelected(answer)"
+                    [class.correct]="AnswerSelected && TimeRemaining <= 0 && CurrentQuestion?.correct_answer == answer"
+                    [disabled]="AnswerSelected"
+                    [innerHTML]="answer">
+                </button>
+
+                <div class="avatar-container">
+                    <img *ngFor="let player of GetPlayerAnswerChoices(answer)" src="assets/avatars/{{player.PlayerInfo.Avatar}}.png">
+                </div>
+                
             </div>
-            
         </div>
-    </div>
+    </ng-container>
 </ng-container>

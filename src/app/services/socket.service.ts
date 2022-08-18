@@ -25,7 +25,7 @@ export class SocketService {
   public LobbyCreated = new Subject<string>();
   public LobbyJoined = new Subject<void>();
   public InformationShared = new Subject<InformationContainer>();
-  public LobbySynchronised = new Subject<SynchroniseContainer>();
+  public LobbySynchronised = new Subject<SynchroniseContainer<any>>();
   public LobbyClosed = new Subject<void>();
 
   public LobbyCode = "";
@@ -51,7 +51,7 @@ export class SocketService {
   }
 
   private handleLobbySyncResponse(data: string): void {
-    let syncContainer: SynchroniseContainer = JSON.parse(data);
+    let syncContainer: SynchroniseContainer<any> = JSON.parse(data);
     this.LobbySynchronised.next(syncContainer);
   }
 
@@ -76,7 +76,7 @@ export class SocketService {
     this.socket.emit(Request.ShareInformation, dataString);
   }
 
-  public SynchroniseLobby(data: SynchroniseContainer): void {
+  public SynchroniseLobby<T>(data: SynchroniseContainer<T>): void {
     let dataString = JSON.stringify(data);
     this.socket.emit(Request.SynchroniseLobby, dataString);
   }

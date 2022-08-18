@@ -23,6 +23,8 @@ import { StorageService } from './services/storage.service';
 import { HomePage } from './pages/home/home.page';
 import { TriviaPage } from './pages/trivia/trivia.page';
 import { TriviaGameComponent } from './components/trivia-game/trivia-game.component';
+import { CategorySelectorComponent } from './components/trivia-game/category-selector/category-selector.component';
+import { LeaderboardComponent } from './components/trivia-game/leaderboard/leaderboard.component';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
@@ -37,6 +39,8 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     JoinLobbyComponent,
     CreateProfileComponent,
     TriviaGameComponent,
+    CategorySelectorComponent,
+    LeaderboardComponent,
     
     // Pages
     HomePage,

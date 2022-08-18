@@ -22,16 +22,16 @@ export class LobbyComponent implements OnInit {
   public get IsHost(): boolean { return this.socketService.IsHost; }
 
   constructor(
-    private triviaState: TriviaStateService, 
-    private socketService: SocketService, 
-    private appService: AppService, 
-    private router: Router, 
+    private triviaState: TriviaStateService,
+    private socketService: SocketService,
+    private appService: AppService,
+    private router: Router,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.LobbyCode = this.triviaState.LobbyCode;
 
-    if (this.socketService.IsHost == true && this.appService.PlayerInfo ) {
+    if (this.socketService.IsHost == true && this.appService.PlayerInfo) {
       this.triviaState.Players.push(this.appService.PlayerInfo);
 
       this.socketService.InformationShared
@@ -58,24 +58,28 @@ export class LobbyComponent implements OnInit {
       this.triviaState.Players.push(infoContainer.Data);
 
       // host raises synchronisation event with rest of lobby
-      let syncContainer: SynchroniseContainer = {
+      this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.Players,
         Data: this.triviaState.Players
-      };
-
-      this.socketService.SynchroniseLobby(syncContainer);
+      });
     }
   }
 
-  private handleSynchronisation(syncContainer: SynchroniseContainer): void {
-    if (syncContainer.SynchronisationType == SynchronisationType.Players) {
-      this.triviaState.Players.length = 0;
-      this.triviaState.Players.push(...syncContainer.Data);
-    }
+  private handleSynchronisation(syncContainer: SynchroniseContainer<any>): void {
+    switch (syncContainer.SynchronisationType) {
 
-    if (syncContainer.SynchronisationType == SynchronisationType.GameStarted) {
-      this.triviaState.CurrentQuestion = syncContainer.Data;
-      this.router.navigate(["../game"], { relativeTo: this.route });
+      case SynchronisationType.Players:
+        this.triviaState.Players.length = 0;
+        this.triviaState.Players.push(...syncContainer.Data);
+        break;
+
+      case SynchronisationType.GameStarted:
+        this.triviaState.CurrentQuestion = syncContainer.Data;
+        this.router.navigate(["../game"], { relativeTo: this.route });
+        break;
+
+      default:
+        break;
     }
   }
 }

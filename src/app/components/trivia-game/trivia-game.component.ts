@@ -31,22 +31,20 @@ export class TriviaGameComponent implements OnInit {
     return (this.timer / this.TIME_FOR_QUESTION) * 100;
   }
 
-  public get Players(): PlayerInfo[] {
-    return this.triviaState.Players;
+  public get NumberOfRounds(): number {
+    return this.triviaState.NumberOfRounds;
   }
 
   public Answers: string[] = [];
-  public PlayerChoices: TriviaAnswerChoice[] = [];
   public AnswerSelected = false;
 
-  public SelectedCategory = "";
-  public Category2LabelMapping = Category2LabelMapping;
-  public Categories = Object.values(Category);
   public ShowCategorySelector = false;
+  public RoundsCompleted = 0;
 
   private timer = this.TIME_FOR_QUESTION;
   private questionsCompleted = 0;
-  private roundsCompleted = 0;
+
+  private playerChoices: TriviaAnswerChoice[] = [];
 
   public constructor(
     private triviaService: TriviaService,
@@ -65,22 +63,12 @@ export class TriviaGameComponent implements OnInit {
     }
   }
 
-  public CheckAnswer(answer: string): boolean {
-    if (this.AnswerSelected &&
-      this.TimeRemaining <= 0 &&
-      this.CurrentQuestion?.correct_answer == answer) {
-      return true
-    }
-
-    return false;
-  }
-
-  public GetPlayerSelections(answer: string): TriviaAnswerChoice[] {
+  public GetPlayerAnswerChoices(answer: string): TriviaAnswerChoice[] {
     if (!this.AnswerSelected) {
       return [];
     }
 
-    return this.PlayerChoices
+    return this.playerChoices
       .filter(c => c.Answer == answer);
   }
 
@@ -92,41 +80,34 @@ export class TriviaGameComponent implements OnInit {
     this.ShowCategorySelector = false;
   }
 
-  public HandleSelectedAnswer(answer: string): void {
-    if (!this.socketService.IsHost) {
-      let triviaAnswerChoice: TriviaAnswerChoice = {
-        PlayerInfo: this.appService.PlayerInfo!,
-        Answer: answer
-      };
-      let infoContainer: InformationContainer = {
-        InformationType: InformationType.TriviaAnswerChoice,
-        Data: triviaAnswerChoice
-      };
-
-      this.socketService.ShareInformation(infoContainer);
-    }
-    else {
-      let triviaAnswerChoice: TriviaAnswerChoice = {
-        PlayerInfo: this.appService.PlayerInfo!,
-        Answer: answer
-      };
-
-      this.PlayerChoices.push(triviaAnswerChoice);
-
-      this.VerifyAnswer(triviaAnswerChoice);
-    }
-
-    let syncContainer: SynchroniseContainer = {
-      SynchronisationType: SynchronisationType.TriviaAnswerChoices,
-      Data: this.PlayerChoices
+  public HandleAnswerSelected(answer: string): void {
+    let triviaAnswerChoice: TriviaAnswerChoice = {
+      PlayerInfo: this.appService.PlayerInfo!,
+      Answer: answer
     };
 
+    if (!this.socketService.IsHost) {
+      this.socketService.ShareInformation({
+        InformationType: InformationType.TriviaAnswerChoice,
+        Data: triviaAnswerChoice
+      });
+    }
+    else {
+      this.verifyAnswer(triviaAnswerChoice);
+
+      this.socketService.SynchroniseLobby({
+        SynchronisationType: SynchronisationType.TriviaAnswerChoices,
+        Data: this.playerChoices
+      });
+    }
+
     this.AnswerSelected = true;
-    this.socketService.SynchroniseLobby(syncContainer);
   }
 
   private getNewQuestion(): void {
-    this.triviaService.GetQuestions(this.SelectedCategory).subscribe((question) => this.handleQuestionReceived(question));
+    this.triviaService
+      .GetQuestions(this.triviaState.SelectedCategory)
+      .subscribe((question) => this.handleQuestionReceived(question));
   }
 
   private reset(): void {
@@ -134,7 +115,7 @@ export class TriviaGameComponent implements OnInit {
     this.beginTimer();
 
     this.AnswerSelected = false;
-    this.PlayerChoices.length = 0;
+    this.playerChoices.length = 0;
   }
 
   private beginTimer(): void {
@@ -145,104 +126,108 @@ export class TriviaGameComponent implements OnInit {
 
       if (this.timer <= 0) {
         clearInterval(interval);
-
-        if (this.socketService.IsHost) {
-    
-          this.synchronisePlayers();
-
-          // wait 5 seconds then get a new question
-          setTimeout(() => {
-            this.progressRounds();
-
-          }, 5000);
-        }
-
-        if (!this.AnswerSelected) {
-          this.HandleSelectedAnswer("");
-        }
+        this.handleTimerEnd();
       }
     }, 1000);
   }
 
-  private progressRounds() {
-    if (this.questionsCompleted < this.QUESTIONS_PER_ROUND) {
-      this.getNewQuestion();
-    }
-    else {
-      this.roundsCompleted++;
-      this.questionsCompleted = 0;
+  private handleTimerEnd() {
+    // when question timer finishes, host should update all player scores
+    if (this.socketService.IsHost) {
+      this.synchronisePlayers();
 
-      if (this.roundsCompleted < this.triviaState.NumberOfRounds) {
-        this.ShowCategorySelector = true;
-      }
-      else {
-        console.log("game over");
-      }
+      // wait 5 seconds then get a new question
+      setTimeout(() => {
+        this.progressGameState();
+      }, 5000);
+    }
+
+    // if timer has ended and no choice is made, we pick an empty answer
+    if (!this.AnswerSelected) {
+      this.HandleAnswerSelected("");
     }
   }
+
+  private progressGameState() {
+    if (this.questionsCompleted < this.QUESTIONS_PER_ROUND) {
+      this.getNewQuestion();
+      return;
+    }
+
+    this.RoundsCompleted++;
+
+    if (this.RoundsCompleted >= this.NumberOfRounds) {
+      this.synchroniseGameInformation();
+      return;
+    }
+
+    this.questionsCompleted = 0;
+    this.ShowCategorySelector = true;
+  }
+
+  // private gameEnd()
 
   private handleQuestionReceived(question: TriviaQuestion): void {
     this.triviaState.CurrentQuestion = question;
     this.questionsCompleted++;
 
+    // set default for sync type to be game started, will be overridden after game has begun
     let syncType = SynchronisationType.GameStarted;
-
-    if (this.PlayerChoices.length > 0) {
+    if (this.playerChoices.length > 0) {
       syncType = SynchronisationType.NewQuestion;
     }
 
     this.reset();
 
-    let gameStartContainer: SynchroniseContainer = {
+    // synchronise the new question with the rest of the lobby
+    this.socketService.SynchroniseLobby({
       SynchronisationType: syncType,
       Data: question
-    };
-    this.socketService.SynchroniseLobby(gameStartContainer);
+    });
 
+    // synchronise player scores and information with the lobby
     this.synchroniseGameInformation();
   }
 
   private synchroniseGameInformation() {
-    let gameInfoContainer: GameInformation = {
-      TotalRounds: this.triviaState.NumberOfRounds,
-      RoundsRemaining: this.triviaState.NumberOfRounds - this.roundsCompleted,
-      CurrentCategory: this.SelectedCategory
-    };
-
-    let sc: SynchroniseContainer = {
+    this.socketService.SynchroniseLobby<GameInformation>({
       SynchronisationType: SynchronisationType.GameInformation,
-      Data: gameInfoContainer
-    };
-
-    this.socketService.SynchroniseLobby(sc);
+      Data: {
+        NumberOfRounds: this.triviaState.NumberOfRounds,
+        RoundsCompleted: this.RoundsCompleted,
+        SelectedCategory: this.triviaState.SelectedCategory
+      }
+    });
   }
 
   private synchronisePlayers(): void {
-    let syncContainer: SynchroniseContainer = {
+    this.socketService.SynchroniseLobby({
       SynchronisationType: SynchronisationType.Players,
       Data: this.triviaState.Players
-    };
-
-    this.socketService.SynchroniseLobby(syncContainer);
+    });
   }
 
   private handleInformationShared(infoContainer: InformationContainer): void {
-    if (infoContainer.InformationType == InformationType.TriviaAnswerChoice) {
 
-      this.VerifyAnswer(infoContainer.Data);
+    switch (infoContainer.InformationType) {
+      case InformationType.TriviaAnswerChoice:
+        this.verifyAnswer(infoContainer.Data);
 
-      this.PlayerChoices.push(infoContainer.Data);
+        this.socketService.SynchroniseLobby({
+          SynchronisationType: SynchronisationType.TriviaAnswerChoices,
+          Data: this.playerChoices
+        });
+        break;
 
-      let syncContainer: SynchroniseContainer = {
-        SynchronisationType: SynchronisationType.TriviaAnswerChoices,
-        Data: this.PlayerChoices
-      };
-
-      this.socketService.SynchroniseLobby(syncContainer);
+      default:
+        break;
     }
   }
 
-  private VerifyAnswer(triviaAnswerChoice: TriviaAnswerChoice) {
+  private verifyAnswer(triviaAnswerChoice: TriviaAnswerChoice) {
+    this.playerChoices.push(triviaAnswerChoice);
+
+    // todo use playerId instead of name
     if (triviaAnswerChoice.Answer == this.CurrentQuestion?.correct_answer) {
       let player = this.triviaState.Players.find(p => p.Name == triviaAnswerChoice.PlayerInfo.Name);
       player!.Score++;
@@ -253,11 +238,11 @@ export class TriviaGameComponent implements OnInit {
    * Players handlng the host synchronisation event
    * @param syncContainer 
    */
-  private handleSynchronisation(syncContainer: SynchroniseContainer): void {
+  private handleSynchronisation(syncContainer: SynchroniseContainer<any>): void {
     switch (syncContainer.SynchronisationType) {
       case SynchronisationType.TriviaAnswerChoices:
-        this.PlayerChoices.length = 0;
-        this.PlayerChoices.push(...syncContainer.Data);
+        this.playerChoices.length = 0;
+        this.playerChoices.push(...syncContainer.Data);
         break;
 
       case SynchronisationType.Players:
@@ -265,10 +250,16 @@ export class TriviaGameComponent implements OnInit {
         this.triviaState.Players.push(...syncContainer.Data);
         console.log(syncContainer);
         break;
-      
+
       case SynchronisationType.NewQuestion:
         this.triviaState.CurrentQuestion = syncContainer.Data;
         this.reset();
+        break;
+
+      case SynchronisationType.GameInformation:
+        this.triviaState.NumberOfRounds = syncContainer.Data.NumberOfRounds;
+        this.RoundsCompleted = syncContainer.Data.RoundsCompleted;
+        this.triviaState.SelectedCategory = syncContainer.Data.SelectedCategory;
         break;
 
       default:
@@ -280,9 +271,7 @@ export class TriviaGameComponent implements OnInit {
     if (!this.CurrentQuestion)
       return;
 
-    let question = this.CurrentQuestion;
-
-    let allAnswers = [...question.incorrect_answers, question.correct_answer];
+    let allAnswers = [...this.CurrentQuestion.incorrect_answers, this.CurrentQuestion.correct_answer];
     let shuffled = this.shuffle(allAnswers);
 
     this.Answers.length = 0;

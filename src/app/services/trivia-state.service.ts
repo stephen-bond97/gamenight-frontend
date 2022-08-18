@@ -7,4 +7,5 @@ export class TriviaStateService {
     public NumberOfRounds = 0;
     public GameStarted: boolean = false;
     public CurrentQuestion: TriviaQuestion | null = null;
+    public SelectedCategory = "";
 }
