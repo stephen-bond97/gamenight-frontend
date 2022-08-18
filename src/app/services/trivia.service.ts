@@ -5,8 +5,8 @@ import { TriviaQuestion } from "src/typings/triviaQuestion";
 
 @Injectable()
 export class TriviaService {
-    // private url = "https://sbond-gamenight.herokuapp.com/trivia/question";
-    private url = "http://localhost:3000/trivia/question";
+    private url = "https://sbond-gamenight.herokuapp.com/trivia/question";
+    // private url = "http://localhost:3000/trivia/question";
 
     /**
      *
