@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TriviaLobbyGuard } from './trivia-lobby.guard';
+import { LobbyGuard } from './lobby.guard';
 
 describe('AuthGuard', () => {
-  let guard: TriviaLobbyGuard;
+  let guard: LobbyGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    guard = TestBed.inject(TriviaLobbyGuard);
+    guard = TestBed.inject(LobbyGuard);
   });
 
   it('should be created', () => {

@@ -1,0 +1,56 @@
+<!-- <ng-container> -->
+<!-- <div class="directions">
+        Click to spin the wheel to see what prize you won!
+    </div>
+    <div class="spin-the-wheel">
+        <label>
+            <input type="radio">
+            <div class="clicker"></div>
+            <div class="wheel">
+                <div class="option o1">
+                    Double Points
+                </div>
+                <div class="option o2">
+                    Miss a turn
+                </div>
+                <div class="option o3">
+                    Lose a point
+                </div>
+                <div class="option o4">
+                    Triple Points
+                </div>
+            </div>
+        </label>
+    </div> -->
+<!-- </ng-container> -->
+<div class="phrase-container">
+    <ng-container *ngFor="let letter of CurrentPhrase">
+        <span *ngIf="letter != ' '" class="letter-container" [class.hidden]="!IsLetterSelected(letter)">
+            {{letter}}
+        </span>
+        <br *ngIf="letter == ' '" />
+    </ng-container>
+</div>
+
+<div class="player">
+    <div *ngIf="CurrentPlayer">
+        <img src="assets/avatars/{{CurrentPlayer.Avatar}}.png">
+        <span class="nameplate">{{CurrentPlayer.Name}}</span>
+        <span class="score">{{CurrentPlayer.Score}}</span>
+    </div>
+</div>
+
+<ng-container *ngIf="IsCurrentPlayer">
+    <mat-form-field appearance="fill">
+        <mat-label>Choose a letter</mat-label>
+        <input matInput id="letterChoice" name="letterChoice" [(ngModel)]="LetterChoice" #name="ngModel" required
+            maxlength="1">
+        <mat-error *ngIf="name.errors?.['required']">
+            You must choose a letter
+        </mat-error>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" class="letterSubmit" (click)="SelectLetter()" [disabled]="name.errors">
+        Choose Letter
+    </button>
+</ng-container>

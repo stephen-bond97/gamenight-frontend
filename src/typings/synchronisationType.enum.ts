@@ -3,6 +3,7 @@ export enum SynchronisationType {
     Question,
     GameStarted,
     NewQuestion,
-    TriviaAnswerChoices,
-    GameInformation
+    AnswerChoices,
+    GameInformation,
+    PlayerTurn
 }

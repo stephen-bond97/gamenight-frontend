@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/services/app.service';
+import { GameStateService } from 'src/app/services/game-state.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { TriviaStateService } from 'src/app/services/trivia-state.service';
 import { TriviaService } from 'src/app/services/trivia.service';
@@ -18,10 +19,9 @@ export class CreateLobbyComponent implements OnInit {
   public Category2LabelMapping = Category2LabelMapping;
 
   public constructor(
-    private trivia: TriviaService, 
+    private gameState: GameStateService,
     private socketService: SocketService, 
     private appService: AppService,
-    private triviaStateService: TriviaStateService,
     private router: Router,
     private route: ActivatedRoute) {
     this.socketService.LobbyCreated.subscribe((lobbyCode) => this.handleLobbyCreated(lobbyCode));
@@ -40,8 +40,8 @@ export class CreateLobbyComponent implements OnInit {
   private handleLobbyCreated(lobbyCode: string): void {
     this.LobbyCode = lobbyCode;
     this.appService.SetLoading(false);
-    this.triviaStateService.LobbyCode = lobbyCode;
-    this.triviaStateService.NumberOfRounds = this.numberOfRounds;
+    this.socketService.LobbyCode = lobbyCode;
+    this.gameState.NumberOfRounds = this.numberOfRounds;
     this.socketService.SetHost();
     this.router.navigate(["../lobby"], { relativeTo: this.route });
   }

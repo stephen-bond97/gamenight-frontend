@@ -5,9 +5,31 @@ import { CreateLobbyComponent } from './components/create-lobby/create-lobby.com
 import { JoinLobbyComponent } from './components/join-lobby/join-lobby.component';
 import { LobbyComponent } from './components/lobby/lobby.component';
 import { TriviaGameComponent } from './components/trivia-game/trivia-game.component';
-import { TriviaLobbyGuard } from './guards/trivia-lobby.guard';
+import { WheelOfFortuneComponent } from './components/wheel-of-fortune-game/wheel-of-fortune-game.component';
+import { LobbyGuard } from './guards/lobby.guard';
 import { HomePage } from './pages/home/home.page';
 import { TriviaPage } from './pages/trivia/trivia.page';
+import { WheelOfFortunePage } from './pages/wheel-of-fortune/wheel-of-fortune.page';
+
+
+const sharedRoutes: Routes = [{
+  path: "",
+  redirectTo: "/home",
+  pathMatch: "full"
+}, {
+  path: "create-lobby",
+  component: CreateLobbyComponent
+}, {
+  path: "join-lobby",
+  component: JoinLobbyComponent
+}, {
+  path: "join-lobby/:LobbyCode",
+  component: JoinLobbyComponent
+}, {
+  path: "lobby",
+  component: LobbyComponent,
+  canActivate: [LobbyGuard]
+}];
 
 const routes: Routes = [{
   path: "", redirectTo: "home", pathMatch: "full"
@@ -15,28 +37,25 @@ const routes: Routes = [{
   path: "home", component: HomePage
 }, {
   path: "trivia", component: TriviaPage,
-  children: [{
-    path: "",
-    redirectTo: "/home",
-    pathMatch: "full"
-  }, {
-    path: "create-lobby",
-    component: CreateLobbyComponent
-  }, {
-    path: "join-lobby",
-    component: JoinLobbyComponent
-  }, {
-    path: "join-lobby/:LobbyCode",
-    component: JoinLobbyComponent
-  }, {
-    path: "game",
-    component: TriviaGameComponent,
-    canActivate: [TriviaLobbyGuard]
-  }, {
-    path: "lobby",
-    component: LobbyComponent,
-    canActivate: [TriviaLobbyGuard]
-  },]
+  children: [
+    ...sharedRoutes,
+    {
+      path: "game",
+      component: TriviaGameComponent,
+      canActivate: [LobbyGuard]
+    }
+  ]
+}, {
+  path: "wheel-of-fortune",
+  component: WheelOfFortunePage,
+  children: [
+    ...sharedRoutes,
+    {
+      path: "game",
+      component: WheelOfFortuneComponent,
+      canActivate: [LobbyGuard]
+    }
+  ]
 }];
 
 @NgModule({

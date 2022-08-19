@@ -1,5 +1,6 @@
 export enum InformationType {
     PlayerInfo,
     TriviaQuestion,
-    TriviaAnswerChoice
+    TriviaAnswerChoice,
+    LetterChoice
 }

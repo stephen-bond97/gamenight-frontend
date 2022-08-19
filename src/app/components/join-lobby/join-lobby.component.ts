@@ -44,7 +44,7 @@ export class JoinLobbyComponent implements OnInit {
   }
 
   private handleLobbyJoined(): void {
-    this.triviaStateService.LobbyCode = this.LobbyCode;
+    this.socketService.LobbyCode = this.LobbyCode;
 
     // creating information container
     let infoContainer: InformationContainer = {
