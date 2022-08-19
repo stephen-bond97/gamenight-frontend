@@ -56,7 +56,7 @@ export class WheelOfFortuneComponent implements OnInit {
 
   public SelectLetter(): void {
     if (this.socketService.IsHost) {
-      this.AnswerChoices.push(this.LetterChoice);
+      this.AnswerChoices.push(this.LetterChoice.toLowerCase());
       this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.AnswerChoices,
         Data: this.AnswerChoices
@@ -67,7 +67,7 @@ export class WheelOfFortuneComponent implements OnInit {
     else {
       this.socketService.ShareInformation({
         InformationType: InformationType.LetterChoice,
-        Data: this.LetterChoice
+        Data: this.LetterChoice.toLowerCase()
       });
     }
   }
