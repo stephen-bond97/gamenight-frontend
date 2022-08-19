@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GameStateService } from 'src/app/services/game-state.service';
 import { TriviaStateService } from 'src/app/services/trivia-state.service';
 import { PlayerInfo } from 'src/typings/playerInfo';
 
@@ -9,12 +10,12 @@ import { PlayerInfo } from 'src/typings/playerInfo';
 })
 export class LeaderboardComponent implements OnInit {
   public get Players(): PlayerInfo[] {
-    return this.triviaState.Players;
+    return this.gameState.Players;
   }
 
 
   constructor(
-    private triviaState: TriviaStateService
+    private gameState: GameStateService
   ) { }
 
   ngOnInit(): void {

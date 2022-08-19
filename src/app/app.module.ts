@@ -25,6 +25,11 @@ import { TriviaPage } from './pages/trivia/trivia.page';
 import { TriviaGameComponent } from './components/trivia-game/trivia-game.component';
 import { CategorySelectorComponent } from './components/trivia-game/category-selector/category-selector.component';
 import { LeaderboardComponent } from './components/trivia-game/leaderboard/leaderboard.component';
+import { WheelOfFortuneComponent } from './components/wheel-of-fortune-game/wheel-of-fortune-game.component';
+import { PhraseService } from './services/phrase.service';
+import { WheelOfFortunePage } from './pages/wheel-of-fortune/wheel-of-fortune.page';
+import { GameStateService } from './services/game-state.service';
+import { WheelOfFortuneStateService } from './services/wheel-of-fortune.state.service';
 
 const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 
@@ -41,10 +46,12 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     TriviaGameComponent,
     CategorySelectorComponent,
     LeaderboardComponent,
+    WheelOfFortuneComponent,
     
     // Pages
     HomePage,
-    TriviaPage
+    TriviaPage,
+    WheelOfFortunePage
   ],
   imports: [
     BrowserModule,
@@ -56,7 +63,7 @@ const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', 
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [SocketService, TriviaService, AppService, TriviaStateService, StorageService],
+  providers: [SocketService, TriviaService, AppService, GameStateService, TriviaStateService, WheelOfFortuneStateService, StorageService, PhraseService],
   bootstrap: [ShellComponent]
 })
 export class AppModule { }

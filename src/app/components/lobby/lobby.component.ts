@@ -9,6 +9,8 @@ import { PlayerInfo } from 'src/typings/playerInfo';
 import { SynchronisationType } from 'src/typings/synchronisationType.enum';
 import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { GameStateService } from 'src/app/services/game-state.service';
+import { WheelOfFortuneStateService } from 'src/app/services/wheel-of-fortune.state.service';
 
 @UntilDestroy()
 @Component({
@@ -18,21 +20,23 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 })
 export class LobbyComponent implements OnInit {
   public LobbyCode = "";
-  public get Players(): PlayerInfo[] { return this.triviaState.Players; }
+  public get Players(): PlayerInfo[] { return this.gameState.Players; }
   public get IsHost(): boolean { return this.socketService.IsHost; }
 
   constructor(
     private triviaState: TriviaStateService,
+    private gameState: GameStateService,
     private socketService: SocketService,
     private appService: AppService,
     private router: Router,
+    private wheelState: WheelOfFortuneStateService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.LobbyCode = this.triviaState.LobbyCode;
+    this.LobbyCode = this.socketService.LobbyCode;
 
     if (this.socketService.IsHost == true && this.appService.PlayerInfo) {
-      this.triviaState.Players.push(this.appService.PlayerInfo);
+      this.gameState.Players.push(this.appService.PlayerInfo);
 
       this.socketService.InformationShared
         .pipe(untilDestroyed(this))
@@ -55,12 +59,12 @@ export class LobbyComponent implements OnInit {
 
   private handleInformationShared(infoContainer: InformationContainer): void {
     if (infoContainer.InformationType == InformationType.PlayerInfo) {
-      this.triviaState.Players.push(infoContainer.Data);
+      this.gameState.Players.push(infoContainer.Data);
 
       // host raises synchronisation event with rest of lobby
       this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.Players,
-        Data: this.triviaState.Players
+        Data: this.gameState.Players
       });
     }
   }
@@ -69,12 +73,19 @@ export class LobbyComponent implements OnInit {
     switch (syncContainer.SynchronisationType) {
 
       case SynchronisationType.Players:
-        this.triviaState.Players.length = 0;
-        this.triviaState.Players.push(...syncContainer.Data);
+        this.gameState.Players.length = 0;
+        this.gameState.Players.push(...syncContainer.Data);
         break;
 
       case SynchronisationType.GameStarted:
-        this.triviaState.CurrentQuestion = syncContainer.Data;
+        if (window.location.pathname.includes("trivia")) {
+          this.triviaState.CurrentQuestion = syncContainer.Data;
+        }
+
+        if (window.location.pathname.includes("wheel-of-fortune")) {
+          this.wheelState.CurrentPhrase = syncContainer.Data;
+        }
+        
         this.router.navigate(["../game"], { relativeTo: this.route });
         break;
 

@@ -12,6 +12,7 @@ import { TriviaQuestion } from 'src/typings/triviaQuestion';
 import { GameInformation } from 'src/typings/gameInformation';
 import { Category, Category2LabelMapping } from 'src/typings/category.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
+import { GameStateService } from 'src/app/services/game-state.service';
 
 @Component({
   selector: 'app-trivia-game',
@@ -32,7 +33,7 @@ export class TriviaGameComponent implements OnInit {
   }
 
   public get NumberOfRounds(): number {
-    return this.triviaState.NumberOfRounds;
+    return this.gameState.NumberOfRounds;
   }
 
   public Answers: string[] = [];
@@ -47,6 +48,7 @@ export class TriviaGameComponent implements OnInit {
   private playerChoices: TriviaAnswerChoice[] = [];
 
   public constructor(
+    private gameState: GameStateService,
     private triviaService: TriviaService,
     private socketService: SocketService,
     private triviaState: TriviaStateService,
@@ -96,7 +98,7 @@ export class TriviaGameComponent implements OnInit {
       this.verifyAnswer(triviaAnswerChoice);
 
       this.socketService.SynchroniseLobby({
-        SynchronisationType: SynchronisationType.TriviaAnswerChoices,
+        SynchronisationType: SynchronisationType.AnswerChoices,
         Data: this.playerChoices
       });
     }
@@ -193,7 +195,7 @@ export class TriviaGameComponent implements OnInit {
     this.socketService.SynchroniseLobby<GameInformation>({
       SynchronisationType: SynchronisationType.GameInformation,
       Data: {
-        NumberOfRounds: this.triviaState.NumberOfRounds,
+        NumberOfRounds: this.gameState.NumberOfRounds,
         RoundsCompleted: this.RoundsCompleted,
         SelectedCategory: this.triviaState.SelectedCategory
       }
@@ -203,7 +205,7 @@ export class TriviaGameComponent implements OnInit {
   private synchronisePlayers(): void {
     this.socketService.SynchroniseLobby({
       SynchronisationType: SynchronisationType.Players,
-      Data: this.triviaState.Players
+      Data: this.gameState.Players
     });
   }
 
@@ -214,7 +216,7 @@ export class TriviaGameComponent implements OnInit {
         this.verifyAnswer(infoContainer.Data);
 
         this.socketService.SynchroniseLobby({
-          SynchronisationType: SynchronisationType.TriviaAnswerChoices,
+          SynchronisationType: SynchronisationType.AnswerChoices,
           Data: this.playerChoices
         });
         break;
@@ -229,7 +231,7 @@ export class TriviaGameComponent implements OnInit {
 
     // todo use playerId instead of name
     if (triviaAnswerChoice.Answer == this.CurrentQuestion?.correct_answer) {
-      let player = this.triviaState.Players.find(p => p.Name == triviaAnswerChoice.PlayerInfo.Name);
+      let player = this.gameState.Players.find(p => p.Name == triviaAnswerChoice.PlayerInfo.Name);
       player!.Score++;
     }
   }
@@ -240,14 +242,14 @@ export class TriviaGameComponent implements OnInit {
    */
   private handleSynchronisation(syncContainer: SynchroniseContainer<any>): void {
     switch (syncContainer.SynchronisationType) {
-      case SynchronisationType.TriviaAnswerChoices:
+      case SynchronisationType.AnswerChoices:
         this.playerChoices.length = 0;
         this.playerChoices.push(...syncContainer.Data);
         break;
 
       case SynchronisationType.Players:
-        this.triviaState.Players.length = 0;
-        this.triviaState.Players.push(...syncContainer.Data);
+        this.gameState.Players.length = 0;
+        this.gameState.Players.push(...syncContainer.Data);
         console.log(syncContainer);
         break;
 
@@ -257,7 +259,7 @@ export class TriviaGameComponent implements OnInit {
         break;
 
       case SynchronisationType.GameInformation:
-        this.triviaState.NumberOfRounds = syncContainer.Data.NumberOfRounds;
+        this.gameState.NumberOfRounds = syncContainer.Data.NumberOfRounds;
         this.RoundsCompleted = syncContainer.Data.RoundsCompleted;
         this.triviaState.SelectedCategory = syncContainer.Data.SelectedCategory;
         break;
