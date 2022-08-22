@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'src/app/services/app.service';
 import { GameStateService } from 'src/app/services/game-state.service';
 import { PhraseService } from 'src/app/services/phrase.service';
@@ -10,6 +11,7 @@ import { PhraseCategory } from 'src/typings/phraseCategory.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
 import { SynchronisationType } from 'src/typings/synchronisationType.enum';
 import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
+import { SolvePhraseComponent } from './solve-phrase/solve-phrase.component';
 
 @Component({
   selector: 'app-wheel-of-fortune-game',
@@ -45,7 +47,8 @@ export class WheelOfFortuneComponent implements OnInit {
     private gameState: GameStateService,
     private phraseService: PhraseService,
     private appService: AppService,
-    private socketService: SocketService) { }
+    private socketService: SocketService,
+    private dialog: MatDialog) { }
 
   ngOnInit(): void {
     if (!this.socketService.IsHost) {
@@ -69,11 +72,25 @@ export class WheelOfFortuneComponent implements OnInit {
   }
 
   public SelectLetter(): void {
+    if (this.AnswerChoices.includes(this.LetterChoice)) {
+      this.LetterChoice = "";
+      return;
+    }
+
     if (this.socketService.IsHost) {
       this.AnswerChoices.push(this.LetterChoice.toLowerCase());
       this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.AnswerChoices,
         Data: this.AnswerChoices
+      });
+
+      if (this.CurrentPhrase.includes(this.LetterChoice)) {
+        this.wheelStateService.SelectedPlayer!.Score++;
+      }
+
+      this.socketService.SynchroniseLobby({
+        SynchronisationType: SynchronisationType.Players,
+        Data: this.gameState.Players
       });
 
       this.selectPlayerForTurn();
@@ -84,6 +101,16 @@ export class WheelOfFortuneComponent implements OnInit {
         Data: this.LetterChoice.toLowerCase()
       });
     }
+
+    this.LetterChoice = "";
+  }
+
+  public HandleSolveClick(): void {
+    this.dialog.open(SolvePhraseComponent, {
+      enterAnimationDuration: "500ms",
+      exitAnimationDuration: "100ms",
+      disableClose: true
+    });
   }
 
   private getRandomCategory(): void {
@@ -117,6 +144,11 @@ export class WheelOfFortuneComponent implements OnInit {
         this.wheelStateService.SelectedCategory = syncContainer.Data;
         break;
 
+      case SynchronisationType.Players:
+        this.gameState.Players.length = 0;
+        this.gameState.Players.push(...syncContainer.Data);
+        break;
+
       default:
         break;
     }
@@ -125,10 +157,19 @@ export class WheelOfFortuneComponent implements OnInit {
   private handleInformationShared(infoContainer: InformationContainer): void {
     switch (infoContainer.InformationType) {
       case InformationType.LetterChoice:
+        if (this.CurrentPhrase.includes(infoContainer.Data)) {
+          this.CurrentPlayer!.Score++;
+        }
+
         this.AnswerChoices.push(infoContainer.Data);
         this.socketService.SynchroniseLobby({
           SynchronisationType: SynchronisationType.AnswerChoices,
           Data: this.AnswerChoices
+        });
+
+        this.socketService.SynchroniseLobby({
+          SynchronisationType: SynchronisationType.Players,
+          Data: this.gameState.Players
         });
 
         this.selectPlayerForTurn();

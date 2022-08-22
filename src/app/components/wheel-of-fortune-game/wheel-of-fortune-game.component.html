@@ -24,6 +24,8 @@
     </div> -->
 <!-- </ng-container> -->
 
+<app-leaderboard></app-leaderboard>
+
 <app-wheel-category-selector *ngIf="SelectedCategory != null"></app-wheel-category-selector>
 
 <div class="phrase-container">
@@ -53,7 +55,13 @@
         </mat-error>
     </mat-form-field>
 
-    <button mat-flat-button color="primary" class="letterSubmit" (click)="SelectLetter()" [disabled]="name.errors">
-        Choose Letter
-    </button>
+    <div>
+        <button mat-flat-button color="accent" class="solvePhrase" (click)="HandleSolveClick()">
+            Solve
+        </button>
+
+        <button mat-flat-button color="primary" class="letterSubmit" (click)="SelectLetter()" [disabled]="name.errors">
+            Choose Letter
+        </button>
+    </div>
 </ng-container>

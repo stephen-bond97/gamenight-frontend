@@ -31,6 +31,7 @@ import { WheelOfFortunePage } from './pages/wheel-of-fortune/wheel-of-fortune.pa
 import { GameStateService } from './services/game-state.service';
 import { WheelOfFortuneStateService } from './services/wheel-of-fortune.state.service';
 import { WheelCategorySelectorComponent } from './components/wheel-of-fortune-game/wheel-category-selector/wheel-category-selector.component';
+import { SolvePhraseComponent } from './components/wheel-of-fortune-game/solve-phrase/solve-phrase.component';
 
 // const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
 const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
@@ -54,6 +55,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
     // Wheel Of Fortune Components
     WheelOfFortuneComponent,
     WheelCategorySelectorComponent,
+    SolvePhraseComponent,
     
     // Pages
     HomePage,

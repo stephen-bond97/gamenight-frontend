@@ -1,0 +1,11 @@
+<mat-form-field appearance="fill">
+    <mat-label>Choose a letter</mat-label>
+    <input matInput id="letterChoice" name="letterChoice" [(ngModel)]="PhraseChoice" #name="ngModel" required
+        minlength="1" (keydown.enter)="SolvePhrase()">
+    <mat-error *ngIf="name.errors?.['required']">
+        You must choose a letter
+    </mat-error>
+    <button mat-flat-button color="accent" class="solvePhrase" (click)="SolvePhrase()">
+        Solve
+    </button>
+</mat-form-field>

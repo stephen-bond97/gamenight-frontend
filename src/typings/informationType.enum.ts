@@ -2,5 +2,6 @@ export enum InformationType {
     PlayerInfo,
     TriviaQuestion,
     TriviaAnswerChoice,
-    LetterChoice
+    LetterChoice,
+    SolvePhrase
 }
