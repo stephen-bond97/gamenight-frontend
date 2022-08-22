@@ -6,6 +6,7 @@ import { SocketService } from 'src/app/services/socket.service';
 import { WheelOfFortuneStateService } from 'src/app/services/wheel-of-fortune.state.service';
 import { InformationContainer } from 'src/typings/informationContainer';
 import { InformationType } from 'src/typings/informationType.enum';
+import { PhraseCategory } from 'src/typings/phraseCategory.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
 import { SynchronisationType } from 'src/typings/synchronisationType.enum';
 import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
@@ -16,6 +17,8 @@ import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
   styleUrls: ['./wheel-of-fortune-game.component.scss']
 })
 export class WheelOfFortuneComponent implements OnInit {
+  private currentPlayerIndex = 0;
+
   public AnswerChoices: string[] = [];
 
   public LetterChoice = "";
@@ -32,6 +35,10 @@ export class WheelOfFortuneComponent implements OnInit {
     return this.CurrentPlayer?.Name == this.appService.PlayerInfo?.Name;
   }
 
+  public get SelectedCategory(): PhraseCategory | null {
+    return this.wheelStateService.SelectedCategory;
+  }
+
 
   constructor(
     private wheelStateService: WheelOfFortuneStateService,
@@ -46,7 +53,14 @@ export class WheelOfFortuneComponent implements OnInit {
     }
     else {
       this.socketService.InformationShared.subscribe((infoContainer) => this.handleInformationShared(infoContainer));
-      this.phraseService.Phrase().subscribe((phrase) => this.handlePhraseReceived(phrase));
+
+      this.socketService.SynchroniseLobby({
+        SynchronisationType: SynchronisationType.GameStarted
+      });
+
+      this.getRandomCategory();
+
+      this.selectPlayerForTurn();
     }
   }
 
@@ -72,6 +86,17 @@ export class WheelOfFortuneComponent implements OnInit {
     }
   }
 
+  private getRandomCategory(): void {
+    this.wheelStateService.SelectedCategory = this.getRandomEnum(PhraseCategory);
+
+    this.socketService.SynchroniseLobby({
+      SynchronisationType: SynchronisationType.CategorySelected,
+      Data: this.wheelStateService.SelectedCategory
+    });
+
+    this.phraseService.GetPhrase(this.wheelStateService.SelectedCategory).subscribe((phrase) => this.handlePhraseReceived(phrase));
+  }
+
   private handleLobbySynchronised(syncContainer: SynchroniseContainer<any>): void {
     switch (syncContainer.SynchronisationType) {
       case SynchronisationType.PlayerTurn:
@@ -81,6 +106,15 @@ export class WheelOfFortuneComponent implements OnInit {
       case SynchronisationType.AnswerChoices:
         this.AnswerChoices.length = 0;
         this.AnswerChoices.push(...syncContainer.Data);
+        break;
+
+      case SynchronisationType.NewPhrase:
+        this.wheelStateService.CurrentPhrase = syncContainer.Data;
+        this.AnswerChoices.length = 0;
+        break;
+
+      case SynchronisationType.CategorySelected:
+        this.wheelStateService.SelectedCategory = syncContainer.Data;
         break;
 
       default:
@@ -106,26 +140,56 @@ export class WheelOfFortuneComponent implements OnInit {
   }
 
   private handlePhraseReceived(phrase: string): void {
-    this.wheelStateService.CurrentPhrase = phrase;
+    this.wheelStateService.CurrentPhrase = phrase.toLowerCase();
+    this.AnswerChoices.length = 0;
 
-    let syncType = SynchronisationType.GameStarted;
     this.socketService.SynchroniseLobby({
-      SynchronisationType: syncType,
-      Data: phrase
+      SynchronisationType: SynchronisationType.NewPhrase,
+      Data: this.wheelStateService.CurrentPhrase
     });
-
-    this.selectPlayerForTurn();
   }
 
   private selectPlayerForTurn(): void {
-    let size = this.gameState.Players.length;
-    let player = this.gameState.Players.at(Math.floor(Math.random() * size));
+    if (this.currentPlayerIndex >= this.gameState.Players.length) {
+      this.shuffle(this.gameState.Players);
+      this.currentPlayerIndex = 0;
+    }
+
+    let player = this.gameState.Players.at(this.currentPlayerIndex);
+    this.currentPlayerIndex++;
 
     this.wheelStateService.SelectedPlayer = player!;
 
     this.socketService.SynchroniseLobby({
       SynchronisationType: SynchronisationType.PlayerTurn,
       Data: player
-    })
+    });
+  }
+
+  private getRandomEnum<T>(anEnum: T): T[keyof T] {
+    const enumValues = Object.keys(anEnum)
+      .map(n => Number.parseInt(n))
+      .filter(n => !Number.isNaN(n)) as unknown as T[keyof T][]
+    const randomIndex = Math.floor(Math.random() * enumValues.length)
+    const randomEnumValue = enumValues[randomIndex]
+    return randomEnumValue;
+  }
+
+  private shuffle<T>(array: T[]): T[] {
+    let currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
   }
 }

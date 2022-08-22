@@ -81,10 +81,6 @@ export class LobbyComponent implements OnInit {
         if (window.location.pathname.includes("trivia")) {
           this.triviaState.CurrentQuestion = syncContainer.Data;
         }
-
-        if (window.location.pathname.includes("wheel-of-fortune")) {
-          this.wheelState.CurrentPhrase = syncContainer.Data;
-        }
         
         this.router.navigate(["../game"], { relativeTo: this.route });
         break;

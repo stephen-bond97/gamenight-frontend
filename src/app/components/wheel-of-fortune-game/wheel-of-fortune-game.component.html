@@ -23,6 +23,9 @@
         </label>
     </div> -->
 <!-- </ng-container> -->
+
+<app-wheel-category-selector *ngIf="SelectedCategory != null"></app-wheel-category-selector>
+
 <div class="phrase-container">
     <ng-container *ngFor="let letter of CurrentPhrase">
         <span *ngIf="letter != ' '" class="letter-container" [class.hidden]="!IsLetterSelected(letter)">
@@ -33,18 +36,18 @@
 </div>
 
 <div class="player">
-    <div *ngIf="CurrentPlayer">
+    <div *ngIf="CurrentPlayer && !IsCurrentPlayer">
         <img src="assets/avatars/{{CurrentPlayer.Avatar}}.png">
-        <span class="nameplate">{{CurrentPlayer.Name}}</span>
-        <span class="score">{{CurrentPlayer.Score}}</span>
+        <span class="nameplate">{{CurrentPlayer.Name}} is selecting</span>
     </div>
 </div>
+
 
 <ng-container *ngIf="IsCurrentPlayer">
     <mat-form-field appearance="fill">
         <mat-label>Choose a letter</mat-label>
         <input matInput id="letterChoice" name="letterChoice" [(ngModel)]="LetterChoice" #name="ngModel" required
-            maxlength="1">
+            maxlength="1" (keydown.enter)="SelectLetter()">
         <mat-error *ngIf="name.errors?.['required']">
             You must choose a letter
         </mat-error>

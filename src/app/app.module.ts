@@ -30,23 +30,30 @@ import { PhraseService } from './services/phrase.service';
 import { WheelOfFortunePage } from './pages/wheel-of-fortune/wheel-of-fortune.page';
 import { GameStateService } from './services/game-state.service';
 import { WheelOfFortuneStateService } from './services/wheel-of-fortune.state.service';
+import { WheelCategorySelectorComponent } from './components/wheel-of-fortune-game/wheel-category-selector/wheel-category-selector.component';
 
-const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
+// const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
+
 
 @NgModule({
   declarations: [
+    // Shared Components
     ShellComponent,
     SplashComponent,
-
-    // TriviaComponents
     CreateLobbyComponent,
     LobbyComponent,
     JoinLobbyComponent,
     CreateProfileComponent,
+
+    // Trivia Components
     TriviaGameComponent,
     CategorySelectorComponent,
     LeaderboardComponent,
+
+    // Wheel Of Fortune Components
     WheelOfFortuneComponent,
+    WheelCategorySelectorComponent,
     
     // Pages
     HomePage,

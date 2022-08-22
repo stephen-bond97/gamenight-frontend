@@ -10,8 +10,6 @@ import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
 import { TriviaAnswerChoice } from 'src/typings/triviaAnswerChoice';
 import { TriviaQuestion } from 'src/typings/triviaQuestion';
 import { GameInformation } from 'src/typings/gameInformation';
-import { Category, Category2LabelMapping } from 'src/typings/category.enum';
-import { PlayerInfo } from 'src/typings/playerInfo';
 import { GameStateService } from 'src/app/services/game-state.service';
 
 @Component({
