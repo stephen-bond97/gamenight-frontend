@@ -7,5 +7,6 @@ export enum SynchronisationType {
     CategorySelected,
     AnswerChoices,
     GameInformation,
-    PlayerTurn
+    PlayerTurn,
+    SolvePhrase
 }

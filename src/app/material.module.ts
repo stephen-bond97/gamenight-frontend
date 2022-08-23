@@ -7,8 +7,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatGridListModule } from '@angular/material/grid-list'; 
-import { MatProgressBarModule } from '@angular/material/progress-bar'; 
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 let modules = [
   MatButtonModule,
@@ -20,7 +21,8 @@ let modules = [
   MatInputModule,
   MatDialogModule,
   MatGridListModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatSnackBarModule
 ];
 
 @NgModule({
