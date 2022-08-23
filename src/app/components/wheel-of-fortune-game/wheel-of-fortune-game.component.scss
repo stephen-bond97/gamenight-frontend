@@ -30,6 +30,15 @@
     }
 }
 
+.selected-letters {
+    font-variant: small-caps;
+    font-size: xx-large;
+}
+
+.filtered-letters {
+    margin-top: .5rem;
+}
+
 .player {
     width: 10rem;
     margin-top: 1rem;

@@ -1,5 +1,5 @@
 <div class="leaderboard">
-    <div *ngFor="let player of Players">
+    <div *ngFor="let player of Players" [class.selected]="CurrentPlayer?.Name == player.Name">
         <img src="assets/avatars/{{player.Avatar}}.png">
         <span class="nameplate">{{player.Name}}</span>
         <span class="score">{{player.Score}}</span>

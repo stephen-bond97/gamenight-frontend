@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, timeout } from 'rxjs';
 import { AppService } from 'src/app/services/app.service';
 import { GameStateService } from 'src/app/services/game-state.service';
 import { PhraseService } from 'src/app/services/phrase.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { WheelOfFortuneStateService } from 'src/app/services/wheel-of-fortune.state.service';
+import { GameInformation } from 'src/typings/gameInformation';
 import { InformationContainer } from 'src/typings/informationContainer';
 import { InformationType } from 'src/typings/informationType.enum';
 import { PhraseCategory } from 'src/typings/phraseCategory.enum';
@@ -23,6 +24,7 @@ import { SolvePhraseComponent } from './solve-phrase/solve-phrase.component';
 })
 export class WheelOfFortuneComponent implements OnInit {
   private readonly PHRASES_PER_ROUND = 3;
+  private phrasesCompleted = 0;
   private currentPlayerIndex = 0;
 
   public AnswerChoices: string[] = [];
@@ -49,6 +51,17 @@ export class WheelOfFortuneComponent implements OnInit {
     return this.gameState.NumberOfRounds;
   }
 
+  public get FilteredChoices(): string[] {
+    return this.AnswerChoices.filter((s) => !this.CurrentPhrase.includes(s));
+  }
+
+  public get ShowSolveButton(): boolean {
+    let moreThanHalf = this.AnswerChoices.length < (this.CurrentPhrase.length / 1.25);
+    let choicesRemaining = this.CurrentPhrase.length - (this.CurrentPhrase.filter((s) => this.AnswerChoices.includes(s) || s == " ").length);
+    
+    return choicesRemaining > 5 && moreThanHalf;
+  }
+
   public RoundsCompleted = 0;
 
   constructor(
@@ -73,6 +86,8 @@ export class WheelOfFortuneComponent implements OnInit {
 
       this.getRandomCategory();
 
+      Utils.Shuffle(this.gameState.Players);
+
       this.selectPlayerForTurn();
     }
   }
@@ -95,7 +110,9 @@ export class WheelOfFortuneComponent implements OnInit {
       });
 
       if (this.CurrentPhrase.includes(this.LetterChoice)) {
-        this.wheelStateService.SelectedPlayer!.Score++;
+        let count = this.CurrentPhrase.filter((s) => s == this.LetterChoice).length;
+        this.CurrentPlayer!.Score += count;
+      
       }
 
       this.socketService.SynchroniseLobby({
@@ -116,11 +133,23 @@ export class WheelOfFortuneComponent implements OnInit {
   }
 
   public HandleSolveClick(): void {
-    this.dialog.open(SolvePhraseComponent, {
-      enterAnimationDuration: "500ms",
-      exitAnimationDuration: "100ms",
-      disableClose: true
-    });
+    this.dialog
+      .open(SolvePhraseComponent, {
+        enterAnimationDuration: "500ms",
+        exitAnimationDuration: "100ms",
+        disableClose: true
+      })
+      .afterClosed().subscribe((phraseChoice) => {
+        if (!this.socketService.IsHost) {
+          this.socketService.ShareInformation({
+            InformationType: InformationType.SolvePhrase,
+            Data: phraseChoice
+          });
+        }
+        else {
+          this.handlePhraseSolved(phraseChoice);
+        }
+      });
   }
 
   private getRandomCategory(): void {
@@ -128,12 +157,12 @@ export class WheelOfFortuneComponent implements OnInit {
 
     this.getRandomEnum(PhraseCategory).subscribe((r) => {
       this.wheelStateService.SelectedCategory = r;
-      
+
       this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.CategorySelected,
         Data: this.wheelStateService.SelectedCategory
       });
-  
+
       this.phraseService.GetPhrase(this.wheelStateService.SelectedCategory).subscribe((phrase) => this.handlePhraseReceived(phrase));
     });
   }
@@ -164,12 +193,12 @@ export class WheelOfFortuneComponent implements OnInit {
         break;
 
       case SynchronisationType.SolvePhrase:
-        let correct = this.wheelStateService.CurrentPhrase.toLowerCase() == syncContainer.Data.toLowerCase();
-        let solved = correct ? "solved" : "failed to solve";
+        this.showSolveStatus(syncContainer.Data);
+        break;
 
-        this.snackBar.open(`${this.CurrentPlayer?.Name} has ${solved} the phrase`, "Close", {
-          duration: 1500
-        });
+      case SynchronisationType.GameInformation:
+        this.gameState.NumberOfRounds = syncContainer.Data.NumberOfRounds;
+        this.RoundsCompleted = syncContainer.Data.RoundsCompleted;
         break;
 
       default:
@@ -177,14 +206,44 @@ export class WheelOfFortuneComponent implements OnInit {
     }
   }
 
+  private showSolveStatus(answer: string): void {
+    let correct = this.wheelStateService.CurrentPhrase.toLowerCase() == answer.toLowerCase();
+    let solved = correct ? "solved" : "failed to solve";
+
+    this.snackBar.open(`${this.CurrentPlayer?.Name} has ${solved} the phrase`, "Close", {
+      duration: 2000
+    });
+
+    if (this.socketService.IsHost) {
+
+      if (correct) {
+        // show players the correct answer after someone has solved
+        // wait a few seconds before getting the next phrase
+        setTimeout(() => {
+          this.selectPlayerForTurn();
+          this.progressGameState();
+        }, 5000);
+      }
+      else {        
+        this.selectPlayerForTurn();
+      }
+    }
+
+    if (correct) {
+      this.AnswerChoices.length = 0;
+      this.AnswerChoices.push(...this.CurrentPhrase);
+    }
+  }
+
   private handleInformationShared(infoContainer: InformationContainer): void {
+
     switch (infoContainer.InformationType) {
       case InformationType.LetterChoice:
         this.handleLetterChoice(infoContainer);
         break;
 
       case InformationType.SolvePhrase:
-        this.handlePhraseSolved(infoContainer);
+        this.handlePhraseSolved(infoContainer.Data);
         break;
 
       default:
@@ -194,7 +253,8 @@ export class WheelOfFortuneComponent implements OnInit {
 
   private handleLetterChoice(infoContainer: InformationContainer): void {
     if (this.CurrentPhrase.includes(infoContainer.Data)) {
-      this.CurrentPlayer!.Score++;
+      let count = this.CurrentPhrase.filter((s) => s == infoContainer.Data).length;
+      this.CurrentPlayer!.Score += count;
     }
 
     this.AnswerChoices.push(infoContainer.Data);
@@ -213,24 +273,41 @@ export class WheelOfFortuneComponent implements OnInit {
 
   private handlePhraseReceived(phrase: string): void {
     this.wheelStateService.CurrentPhrase = phrase.toLowerCase();
+    this.phrasesCompleted++;
     this.AnswerChoices.length = 0;
 
     this.socketService.SynchroniseLobby({
       SynchronisationType: SynchronisationType.NewPhrase,
       Data: this.wheelStateService.CurrentPhrase
     });
+
+    this.synchroniseGameInformation();
   }
 
-  private handlePhraseSolved(infoContainer: InformationContainer): void {
+  private handlePhraseSolved(phrase: string): void {
+    if (this.wheelStateService.CurrentPhrase.toLowerCase() == phrase.toLowerCase()) {
+      this.CurrentPlayer!.Score += 5;
+
+      this.socketService.SynchroniseLobby({
+        SynchronisationType: SynchronisationType.Players,
+        Data: this.gameState.Players
+      });
+
+      this.AnswerChoices.length = 0;
+      this.AnswerChoices.push(...this.CurrentPhrase);
+
+    }
+
     this.socketService.SynchroniseLobby({
       SynchronisationType: SynchronisationType.SolvePhrase,
-      Data: infoContainer.Data
+      Data: phrase
     });
+
+    this.showSolveStatus(phrase);
   }
 
   private selectPlayerForTurn(): void {
     if (this.currentPlayerIndex >= this.gameState.Players.length) {
-      Utils.Shuffle(this.gameState.Players);
       this.currentPlayerIndex = 0;
     }
 
@@ -242,6 +319,38 @@ export class WheelOfFortuneComponent implements OnInit {
     this.socketService.SynchroniseLobby({
       SynchronisationType: SynchronisationType.PlayerTurn,
       Data: player
+    });
+  }
+
+  private progressGameState() {
+    this.selectPlayerForTurn();
+
+    if (this.phrasesCompleted < this.PHRASES_PER_ROUND) {
+      this.phraseService
+        .GetPhrase(this.wheelStateService.SelectedCategory!)
+        .subscribe((phrase) => this.handlePhraseReceived(phrase));
+      return;
+    }
+
+    this.RoundsCompleted++;
+
+    if (this.RoundsCompleted >= this.NumberOfRounds) {
+      this.synchroniseGameInformation();
+      return;
+    }
+
+    this.phrasesCompleted = 0;
+    this.getRandomCategory();
+  }
+
+  private synchroniseGameInformation() {
+    this.socketService.SynchroniseLobby<GameInformation>({
+      SynchronisationType: SynchronisationType.GameInformation,
+      Data: {
+        NumberOfRounds: this.gameState.NumberOfRounds,
+        RoundsCompleted: this.RoundsCompleted,
+        SelectedCategory: this.wheelStateService.SelectedCategory
+      }
     });
   }
 

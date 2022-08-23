@@ -40,13 +40,11 @@
     </ng-container>
 </div>
 
-<div class="player">
-    <div *ngIf="CurrentPlayer && !IsCurrentPlayer">
-        <img src="assets/avatars/{{CurrentPlayer.Avatar}}.png">
-        <span class="nameplate">{{CurrentPlayer.Name}} is selecting</span>
-    </div>
+<div class="filtered-letters">
+    <span *ngFor="let letter of FilteredChoices" class="selected-letters">
+        {{letter}}
+    </span>
 </div>
-
 
 <ng-container *ngIf="IsCurrentPlayer">
     <mat-form-field appearance="fill">
@@ -59,7 +57,7 @@
     </mat-form-field>
 
     <div>
-        <button mat-flat-button color="accent" class="solvePhrase" (click)="HandleSolveClick()">
+        <button mat-flat-button color="accent" class="solvePhrase" (click)="HandleSolveClick()" *ngIf="ShowSolveButton">
             Solve
         </button>
 
