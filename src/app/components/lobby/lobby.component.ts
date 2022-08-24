@@ -29,11 +29,13 @@ export class LobbyComponent implements OnInit {
     private socketService: SocketService,
     private appService: AppService,
     private router: Router,
-    private wheelState: WheelOfFortuneStateService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.LobbyCode = this.socketService.LobbyCode;
+    this.gameState.Players.length = 0;
+    this.gameState.NumberOfRounds = 50;
+    this.gameState.GameStarted = false;
 
     if (this.socketService.IsHost == true && this.appService.PlayerInfo) {
       this.gameState.Players.push(this.appService.PlayerInfo);

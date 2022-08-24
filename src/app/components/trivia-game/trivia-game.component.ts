@@ -164,8 +164,7 @@ export class TriviaGameComponent implements OnInit {
     this.questionsCompleted = 0;
     this.ShowCategorySelector = true;
   }
-
-  // private gameEnd()
+  
 
   private handleQuestionReceived(question: TriviaQuestion): void {
     this.triviaState.CurrentQuestion = question;
@@ -248,7 +247,6 @@ export class TriviaGameComponent implements OnInit {
       case SynchronisationType.Players:
         this.gameState.Players.length = 0;
         this.gameState.Players.push(...syncContainer.Data);
-        console.log(syncContainer);
         break;
 
       case SynchronisationType.NewQuestion:

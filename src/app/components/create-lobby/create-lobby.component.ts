@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/services/app.service';
 import { GameStateService } from 'src/app/services/game-state.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SocketService } from 'src/app/services/socket.service';
-import { TriviaStateService } from 'src/app/services/trivia-state.service';
-import { TriviaService } from 'src/app/services/trivia.service';
 import { Category, Category2LabelMapping } from 'src/typings/category.enum';
 
+@UntilDestroy()
 @Component({
   selector: 'app-create-lobby',
   templateUrl: './create-lobby.component.html',
@@ -24,7 +24,9 @@ export class CreateLobbyComponent implements OnInit {
     private appService: AppService,
     private router: Router,
     private route: ActivatedRoute) {
-    this.socketService.LobbyCreated.subscribe((lobbyCode) => this.handleLobbyCreated(lobbyCode));
+    this.socketService.LobbyCreated
+    .pipe(untilDestroyed(this))
+    .subscribe((lobbyCode) => this.handleLobbyCreated(lobbyCode));
   }
 
   public categories = Object.values(Category);

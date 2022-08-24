@@ -14,4 +14,8 @@ export class SolvePhraseComponent {
   public SolvePhrase(): void {
     this.dialogRef.close(this.PhraseChoice);
   }
+
+  public cancelSolve(): void {
+    this.dialogRef.close(false);
+  }
 }

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/services/app.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { TriviaStateService } from 'src/app/services/trivia-state.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { InformationContainer } from 'src/typings/informationContainer';
 import { InformationType } from 'src/typings/informationType.enum';
-import { PlayerInfo } from 'src/typings/playerInfo';
 
+@UntilDestroy()
 @Component({
   selector: 'app-join-lobby',
   templateUrl: './join-lobby.component.html',
@@ -18,17 +18,20 @@ export class JoinLobbyComponent implements OnInit {
 
 
   constructor(
-    private activatedRoute: ActivatedRoute, 
-    private socketService: SocketService, 
-    private triviaStateService: TriviaStateService,
+    private activatedRoute: ActivatedRoute,
+    private socketService: SocketService,
     private router: Router,
     private route: ActivatedRoute,
     private appService: AppService) { 
-    this.socketService.LobbyJoined.subscribe(() => this.handleLobbyJoined());
+    this.socketService.LobbyJoined
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this.handleLobbyJoined());
   }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe({
+    this.activatedRoute.paramMap
+    .pipe(untilDestroyed(this))
+    .subscribe({
       next: (paramMap) => {
         let lobbyCode = paramMap.get('LobbyCode');
         if (lobbyCode) {

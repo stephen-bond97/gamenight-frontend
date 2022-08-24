@@ -32,9 +32,10 @@ import { GameStateService } from './services/game-state.service';
 import { WheelOfFortuneStateService } from './services/wheel-of-fortune.state.service';
 import { WheelCategorySelectorComponent } from './components/wheel-of-fortune-game/wheel-category-selector/wheel-category-selector.component';
 import { SolvePhraseComponent } from './components/wheel-of-fortune-game/solve-phrase/solve-phrase.component';
+import { ExceptionDialog } from './shell/exception-dialog/exception.dialog';
 
-// const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
-const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
+const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
+// const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
 
 
 @NgModule({
@@ -46,6 +47,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
     LobbyComponent,
     JoinLobbyComponent,
     CreateProfileComponent,
+    ExceptionDialog,
 
     // Trivia Components
     TriviaGameComponent,

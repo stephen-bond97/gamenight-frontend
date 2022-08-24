@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
     <mat-label>Your Lobby Code</mat-label>
-    <input matInput [(ngModel)]="LobbyCode"/>
+    <input matInput [(ngModel)]="LobbyCode" maxlength="10"(keydown.enter)="HandleJoinLobbyClick()">
 </mat-form-field>
 <button mat-flat-button (click)="HandleJoinLobbyClick()" [disabled]="!LobbyCode">Join Lobby</button>

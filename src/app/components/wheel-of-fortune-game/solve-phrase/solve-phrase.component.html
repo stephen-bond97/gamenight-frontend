@@ -6,6 +6,9 @@
         You must choose a letter
     </mat-error>
 </mat-form-field>
-<button mat-flat-button color="accent" class="solvePhrase" (click)="SolvePhrase()">
-    Solve
-</button>
+<div class="button-container">
+    <button mat-flat-button (click)="cancelSolve()">Cancel</button>
+    <button mat-flat-button color="primary" class="solvePhrase" (click)="SolvePhrase()">
+        Solve
+    </button>
+</div>
