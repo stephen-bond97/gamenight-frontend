@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/services/app.service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -11,8 +11,8 @@ import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { GameStateService } from 'src/app/services/game-state.service';
 import { WheelOfFortuneStateService } from 'src/app/services/wheel-of-fortune.state.service';
+import { Subscription } from 'rxjs';
 
-@UntilDestroy()
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
@@ -33,9 +33,6 @@ export class LobbyComponent implements OnInit {
 
   ngOnInit(): void {
     this.LobbyCode = this.socketService.LobbyCode;
-    this.gameState.Players.length = 0;
-    this.gameState.NumberOfRounds = 50;
-    this.gameState.GameStarted = false;
 
     if (this.socketService.IsHost == true && this.appService.PlayerInfo) {
       this.gameState.Players.push(this.appService.PlayerInfo);

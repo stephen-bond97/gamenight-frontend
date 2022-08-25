@@ -1,6 +1,6 @@
-<ng-container *ngIf="RoundsCompleted >= NumberOfRounds">
+<ng-container *ngIf="Winner && RoundsCompleted >= NumberOfRounds">
     <div>
-        Stephen wins!
+        {{Winner.Name}}
     </div>
     <button mat-raised-button *ngIf="RoundsCompleted >= NumberOfRounds" color="primary" routerLink="/home">Go Home</button>
 </ng-container>
@@ -8,7 +8,7 @@
 <ng-container *ngIf="RoundsCompleted < NumberOfRounds">
     <app-leaderboard></app-leaderboard>
 
-    <app-wheel-category-selector *ngIf="SelectedCategory != null && !(RoundsCompleted >= NumberOfRounds)">
+    <app-wheel-category-selector *ngIf="SelectedCategory != null && RoundsCompleted < NumberOfRounds">
     </app-wheel-category-selector>
     <div *ngIf="SelectedCategory == null">
         Round: {{RoundsCompleted + 1}}

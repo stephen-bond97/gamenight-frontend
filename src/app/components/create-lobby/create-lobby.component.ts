@@ -32,6 +32,9 @@ export class CreateLobbyComponent implements OnInit {
   public categories = Object.values(Category);
 
   ngOnInit(): void {
+    this.gameState.Players.length = 0;
+    this.gameState.NumberOfRounds = 1;
+    this.gameState.GameStarted = false;
   }
 
   public HandleCreateLobbyClick(): void {

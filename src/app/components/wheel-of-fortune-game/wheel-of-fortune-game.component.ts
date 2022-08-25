@@ -34,7 +34,7 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
   public LetterChoice = "";
 
   public get CurrentPhrase(): string[] {
-    return this.wheelStateService.CurrentPhrase.split("");
+    return this.wheelStateService.CurrentPhrase.toLowerCase().split("");
   }
 
   public get CurrentPlayer(): PlayerInfo | null {
@@ -43,6 +43,14 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
 
   public get IsCurrentPlayer(): boolean {
     return this.CurrentPlayer?.Name == this.appService.PlayerInfo?.Name;
+  }
+
+  public get Winner(): PlayerInfo | null {
+    let sortedArray = [...this.gameState.Players]
+      .sort((a, b) => a.Score - b.Score)
+      .reverse();
+    
+    return sortedArray.at(0)!;
   }
 
   public get SelectedCategory(): PhraseCategory | null {
@@ -104,6 +112,17 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
     if (this.socketService.IsHost) {
       this.socketService.CloseLobby();
     }
+
+      this.wheelStateService.SelectedCategory = null;
+      this.RoundsCompleted = 0;
+      this.gameState.NumberOfRounds = 0;
+      this.wheelStateService.CurrentPhrase = "";
+      this.wheelStateService.SelectedPlayer = null;
+      this.phrasesCompleted = 0;
+      this.currentPlayerIndex = 0;
+      this.LetterChoice = "";
+      this.AnswerChoices = [];
+      this.appService.PlayerInfo!.Score = 0;
   }
 
   //#endregion
@@ -120,15 +139,16 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
 
     if (this.socketService.IsHost) {
       this.AnswerChoices.push(this.LetterChoice.toLowerCase());
+
       this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.AnswerChoices,
         Data: this.AnswerChoices
       });
 
-      if (this.CurrentPhrase.includes(this.LetterChoice)) {
-        let count = this.CurrentPhrase.filter((s) => s == this.LetterChoice).length;
-        this.CurrentPlayer!.Score += count;      
-      }
+      if (this.CurrentPhrase.includes(this.LetterChoice.toLowerCase())) {
+        let count = this.CurrentPhrase.filter((s) => s == this.LetterChoice.toLowerCase()).length;
+        this.CurrentPlayer!.Score += count;
+      }      
 
       this.socketService.SynchroniseLobby({
         SynchronisationType: SynchronisationType.Players,
@@ -248,11 +268,10 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
         // show players the correct answer after someone has solved
         // wait a few seconds before getting the next phrase
         setTimeout(() => {
-          this.selectPlayerForTurn();
           this.progressGameState();
-        }, 5000);
+        }, 3000);
       }
-      else {        
+      else {
         this.selectPlayerForTurn();
       }
     }
@@ -343,7 +362,6 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
 
       this.AnswerChoices.length = 0;
       this.AnswerChoices.push(...this.CurrentPhrase);
-
     }
 
     this.socketService.SynchroniseLobby({
@@ -355,7 +373,7 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
   }
 
   private selectPlayerForTurn(): void {
-    if (this.currentPlayerIndex >= this.gameState.Players.length) {
+    if (this.currentPlayerIndex > this.gameState.Players.length) {
       this.currentPlayerIndex = 0;
     }
 
@@ -409,6 +427,6 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
       .filter(n => !Number.isNaN(n)) as unknown as T[keyof T][]
     const randomIndex = Math.floor(Math.random() * enumValues.length)
     const randomEnumValue = enumValues[randomIndex]
-    return of(randomEnumValue).pipe(delay(2000));;
+    return of(randomEnumValue).pipe(delay(2000));
   }
 }

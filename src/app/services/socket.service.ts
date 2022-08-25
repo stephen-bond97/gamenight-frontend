@@ -94,6 +94,7 @@ export class SocketService {
 
   public SetHost(): void {
     this.isHost = true;
+    this.socket.removeAllListeners(Response.InformationShared);
 
     this.socket.on(Response.InformationShared, (data: string) => {
       let informationContainer: InformationContainer = JSON.parse(data);

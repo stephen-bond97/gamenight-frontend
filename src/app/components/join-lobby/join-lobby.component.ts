@@ -42,7 +42,7 @@ export class JoinLobbyComponent implements OnInit {
   }
 
   public HandleJoinLobbyClick(): void {
-    this.appService.SetLoading(true);
+    this.appService.SetLoading(true);    
     this.socketService.JoinLobby(this.LobbyCode.toLowerCase());
   }
 
