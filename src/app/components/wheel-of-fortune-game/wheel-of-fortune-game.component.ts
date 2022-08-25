@@ -373,7 +373,7 @@ export class WheelOfFortuneComponent implements OnInit, OnDestroy {
   }
 
   private selectPlayerForTurn(): void {
-    if (this.currentPlayerIndex > this.gameState.Players.length) {
+    if (this.currentPlayerIndex >= this.gameState.Players.length) {
       this.currentPlayerIndex = 0;
     }
 
