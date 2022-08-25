@@ -34,8 +34,8 @@ import { WheelCategorySelectorComponent } from './components/wheel-of-fortune-ga
 import { SolvePhraseComponent } from './components/wheel-of-fortune-game/solve-phrase/solve-phrase.component';
 import { ExceptionDialog } from './shell/exception-dialog/exception.dialog';
 
-// const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
-const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
+const config: SocketIoConfig = { url: 'https://sbond-gamenight.herokuapp.com/', options: {} };
+// const config: SocketIoConfig = { url: 'http://localhost:3000/', options: {} };
 
 
 @NgModule({
