@@ -13,6 +13,7 @@ import { GameStateService } from 'src/app/services/game-state.service';
 import { WheelOfFortuneStateService } from 'src/app/services/wheel-of-fortune.state.service';
 import { Subscription } from 'rxjs';
 
+@UntilDestroy()
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
