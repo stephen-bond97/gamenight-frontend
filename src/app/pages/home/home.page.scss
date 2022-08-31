@@ -192,6 +192,16 @@ body {
 
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
+@media (max-width: 40rem) {
+    .Title {
+        font-size: 2rem !important;
+    }
+
+    .logo-holder {
+        width: 20rem;
+    }
+}
+
 .Title {
   font-size: 4rem;
   font-family: "Press Start 2P", cursive;
@@ -243,7 +253,8 @@ body {
   display: flex;
 
   .spacer {
-    width: 5rem;
+    min-width: 1rem;
+    flex-grow: 1;
   }
 
   .button-container {

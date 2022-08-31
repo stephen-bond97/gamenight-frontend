@@ -23,9 +23,6 @@ const sharedRoutes: Routes = [{
   path: "join-lobby",
   component: JoinLobbyComponent
 }, {
-  path: "join-lobby/:LobbyCode",
-  component: JoinLobbyComponent
-}, {
   path: "lobby",
   component: LobbyComponent,
   canActivate: [LobbyGuard]
@@ -35,6 +32,9 @@ const routes: Routes = [{
   path: "", redirectTo: "home", pathMatch: "full"
 }, {
   path: "home", component: HomePage
+}, {
+  path: ":Mode/join/:LobbyCode",
+  component: JoinLobbyComponent
 }, {
   path: "trivia", component: TriviaPage,
   children: [
@@ -46,7 +46,7 @@ const routes: Routes = [{
     }
   ]
 }, {
-  path: "phrase",
+  path: "",
   component: WheelOfFortunePage,
   children: [
     ...sharedRoutes,

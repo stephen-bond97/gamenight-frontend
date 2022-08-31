@@ -15,7 +15,7 @@ import { InformationType } from 'src/typings/informationType.enum';
 export class JoinLobbyComponent implements OnInit {
   public LobbyCode = "";
   public LobbyState = "";
-
+  public Mode = "";
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -37,12 +37,17 @@ export class JoinLobbyComponent implements OnInit {
         if (lobbyCode) {
           this.LobbyCode = lobbyCode;
         }
+
+        let mode = paramMap.get('Mode');
+        if (mode) {
+            this.Mode = mode;
+        }
       }
     });
   }
 
   public HandleJoinLobbyClick(): void {
-    this.appService.SetLoading(true);    
+    this.appService.SetLoading(true);
     this.socketService.JoinLobby(this.LobbyCode.toLowerCase());
   }
 
@@ -59,7 +64,13 @@ export class JoinLobbyComponent implements OnInit {
     this.socketService.ShareInformation(infoContainer);
 
     this.appService.SetLoading(false);
-    this.router.navigate(["../lobby"], {relativeTo: this.route})
+
+    if (this.Mode) {
+      this.router.navigate([`/${this.Mode}/lobby`]);
+      return;
+    }
+
+    this.router.navigate(["../lobby"], { relativeTo: this.route });
   }
 
 }

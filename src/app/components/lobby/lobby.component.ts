@@ -1,6 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AppService } from 'src/app/services/app.service';
+import { GameStateService } from 'src/app/services/game-state.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { TriviaStateService } from 'src/app/services/trivia-state.service';
 import { InformationContainer } from 'src/typings/informationContainer';
@@ -8,10 +11,6 @@ import { InformationType } from 'src/typings/informationType.enum';
 import { PlayerInfo } from 'src/typings/playerInfo';
 import { SynchronisationType } from 'src/typings/synchronisationType.enum';
 import { SynchroniseContainer } from 'src/typings/synchroniseContainer';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { GameStateService } from 'src/app/services/game-state.service';
-import { WheelOfFortuneStateService } from 'src/app/services/wheel-of-fortune.state.service';
-import { Subscription } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -21,6 +20,8 @@ import { Subscription } from 'rxjs';
 })
 export class LobbyComponent implements OnInit {
   public LobbyCode = "";
+  public ShareLink = "";
+
   public get Players(): PlayerInfo[] { return this.gameState.Players; }
   public get IsHost(): boolean { return this.socketService.IsHost; }
 
@@ -30,10 +31,14 @@ export class LobbyComponent implements OnInit {
     private socketService: SocketService,
     private appService: AppService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.LobbyCode = this.socketService.LobbyCode;
+    
+    let currentPath = window.location.href.split("/lobby")[0];
+    this.ShareLink = `${currentPath}/join/${this.LobbyCode}`;
 
     if (this.socketService.IsHost == true && this.appService.PlayerInfo) {
       this.gameState.Players.push(this.appService.PlayerInfo);
@@ -55,6 +60,10 @@ export class LobbyComponent implements OnInit {
     input.select();
     document.execCommand('copy');
     input.setSelectionRange(0, 0);
+
+    this.snackBar.open("Copied!", "", {
+        duration: 1000
+    });
   }
 
   private handleInformationShared(infoContainer: InformationContainer): void {
