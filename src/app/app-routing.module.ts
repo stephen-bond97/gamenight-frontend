@@ -46,7 +46,7 @@ const routes: Routes = [{
     }
   ]
 }, {
-  path: "",
+  path: "phrase",
   component: WheelOfFortunePage,
   children: [
     ...sharedRoutes,
