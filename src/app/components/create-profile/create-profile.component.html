@@ -1,11 +1,11 @@
 <mat-form-field appearance="fill">
     <mat-label>Enter your nickname</mat-label>
-    <input matInput id="username" name="username" [(ngModel)]="Nickname" #name="ngModel" required minlength="3"
+    <input matInput id="nn" name="nn" [(ngModel)]="Nickname" #nn="ngModel" required minlength="3" autocomplete="off"
         maxlength="12">
-    <mat-error *ngIf="name.errors?.['required']">
+    <mat-error *ngIf="nn.errors?.['required']">
         Name is required.
     </mat-error>
-    <mat-error *ngIf="name.errors?.['minlength']">
+    <mat-error *ngIf="nn.errors?.['minlength']">
         Name must be at least 3 characters long.
     </mat-error>
 </mat-form-field>
@@ -16,4 +16,4 @@
     </div>
 </div>
   
-<button mat-flat-button color="primary" class="profileButton" (click)="SaveProfile()" [disabled]="name.errors || !Avatar">Save Profile</button>
+<button mat-flat-button color="primary" class="profileButton" (click)="SaveProfile()" [disabled]="nn.errors || !Avatar">Save Profile</button>

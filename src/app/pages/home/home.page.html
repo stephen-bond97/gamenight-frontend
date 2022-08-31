@@ -1,11 +1,9 @@
-<!--
-design by https://www.behance.net/vahanhovh
--->
 <div class="container">
     <div class="small-glows"></div>
 
     <div class="glow">
-        <div class="sun"></div>
+        <div class="sun">
+        </div>
     </div>
 
     <div class="waves">
@@ -26,32 +24,33 @@ design by https://www.behance.net/vahanhovh
 
 </div>
 
+<button class="easter-egg-button" (click)="ToggleEasterEgg()"></button>
+
 <div class="content">
     <div class="logo-container">
         <div class="logo-holder">
-            <p class="logo">
-                Gamenight
-            </p>
+            <span class="Title Background">Gamenight</span>
+            <p id="text" class="Title" [class.hidden]="!ShowEasterEgg">Gamenight</p>
         </div>
     </div>
 
-    <div>
-        <button mat-raised-button color="primary" routerLink="/trivia/create-lobby">Trivia</button>
-    </div>
-
-    <div>
-        <button mat-raised-button color="primary" routerLink="/wheel-of-fortune/create-lobby">Wheel of Fortune</button>
-    </div>
-
-    <div>
-        <div>
+    <div class="games-container">
+        <div class="button-container trivia">
             <div>
-                <button mat-raised-button color="accent" routerLink="/trivia/join-lobby/">Join Trivia Lobby</button>
+                <img src="assets/logos/trivia/logo_transparent.png" />
+                <div class="fill"></div>
             </div>
+            <button mat-raised-button color="primary" routerLink="/trivia/create-lobby">Create a game!</button>
+            <button mat-raised-button color="accent" routerLink="/trivia/join-lobby/">Join a game!</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="button-container wheel">
             <div>
-                <button mat-raised-button color="accent" routerLink="/wheel-of-fortune/join-lobby/">Join Wheel
-                    Lobby</button>
+                <div class="fill"></div>
+                <img src="assets/logos/phrase/logo_transparent.png" />
             </div>
+            <button mat-raised-button color="primary" routerLink="/phrase/create-lobby">Create a game!</button>
+            <button mat-raised-button color="accent" routerLink="/phrase/join-lobby/">Join a game!</button>
         </div>
     </div>
 

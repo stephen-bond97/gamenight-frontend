@@ -45,10 +45,10 @@ mat-progress-bar {
     button {
         width: 100%;
         margin-bottom: 1.2rem;
-        color: #fff !important;
 
         &.correct {
-            background-color: map-get($sb-palette-green, 500) !important;
+            background-color: map-get($sb-orange, 500) !important;
+            color: black;
         }
     }
 }

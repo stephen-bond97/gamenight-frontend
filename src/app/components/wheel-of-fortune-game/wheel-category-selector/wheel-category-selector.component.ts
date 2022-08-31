@@ -64,10 +64,10 @@ export class WheelCategorySelectorComponent implements OnInit {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.globalAlpha = 1;
-    this.ctx.fillStyle = '#622';
+    this.ctx.fillStyle = '#3cbcca';
     this.ctx.fillRect(0, (this.canvas.height - this.scale) / 2, this.canvas.width, this.scale);
     for (let i = 0; i < this.characters.length; i++) {
-      this.ctx.fillStyle = '#ccc';
+      this.ctx.fillStyle = '#fff';
       this.ctx.textBaseline = 'middle';
       this.ctx.textAlign = 'center';
       this.ctx.setTransform(1, 0, 0, 1, Math.floor((this.canvas.width - this.scale * (this.characters.length - 1)) / 2), Math.floor(this.canvas.height / 2));

@@ -1,29 +1,29 @@
-$sb-palette-green: (
-    50 : #e9f1ed,
-    100 : #c8dcd1,
-    200 : #a3c4b3,
-    300 : #7eac94,
-    400 : #629b7d,
-    500 : #468966,
-    600 : #3f815e,
-    700 : #377653,
-    800 : #2f6c49,
-    900 : #205938,
-    A100 : #9bffc2,
-    A200 : #68ffa3,
-    A400 : #35ff83,
-    A700 : #1bff74,
+$sb-teal: (
+    50 : #f6fdfd,
+    100 : #e9fafa,
+    200 : #daf7f6,
+    300 : #cbf3f2,
+    400 : #c0f1f0,
+    500 : #b5eeed,
+    600 : #aeeceb,
+    700 : #a5e9e8,
+    800 : #9de7e5,
+    900 : #8de2e0,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #ffffff,
+    A700 : #f6ffff,
     contrast: (
         50 : #000000,
         100 : #000000,
         200 : #000000,
         300 : #000000,
         400 : #000000,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
         A100 : #000000,
         A200 : #000000,
         A400 : #000000,
@@ -31,7 +31,7 @@ $sb-palette-green: (
     )
 );
 
-$sb-palette-orange: (
+$sb-orange: (
     50 : #fff6e7,
     100 : #ffe7c4,
     200 : #ffd89d,
@@ -64,21 +64,21 @@ $sb-palette-orange: (
     )
 );
 
-$sb-palette-yellow: (
-    50 : #fffdf4,
-    100 : #fffbe4,
-    200 : #fff8d2,
-    300 : #fff5c0,
-    400 : #fff2b3,
-    500 : #fff0a5,
-    600 : #ffee9d,
-    700 : #ffec93,
-    800 : #ffe98a,
-    900 : #ffe579,
+$sb-yellow: (
+    50 : #fefceb,
+    100 : #fef6ce,
+    200 : #fdf1ad,
+    300 : #fceb8c,
+    400 : #fbe674,
+    500 : #fae25b,
+    600 : #f9df53,
+    700 : #f9da49,
+    800 : #f8d640,
+    900 : #f6cf2f,
     A100 : #ffffff,
     A200 : #ffffff,
-    A400 : #ffffff,
-    A700 : #ffffff,
+    A400 : #fff5d2,
+    A700 : #fff0b8,
     contrast: (
         50 : #000000,
         100 : #000000,
@@ -97,7 +97,7 @@ $sb-palette-yellow: (
     )
 );
 
-$sb-palette-amber: (
+$sb-amber: (
     50 : #f6e9e5,
     100 : #e9c8be,
     200 : #dba493,
@@ -130,7 +130,7 @@ $sb-palette-amber: (
     )
 );
 
-$sb-palette-red: (
+$sb-red: (
     50 : #f1e5e0,
     100 : #ddbfb3,
     200 : #c79480,
