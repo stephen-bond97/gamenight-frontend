@@ -78,13 +78,13 @@ body {
   left: 0;
   top: 77px;
   height: 151px;
-  background: url(/assets/clouds.svg)
+  background: url("^assets/clouds.svg")
     repeat-x;
   background-position-x: 170px;
 }
 
 .top_wave {
-  background: url(/assets/top_wave.png)
+  background: url("^assets/top_wave.png")
     repeat-x 0 -1px;
   height: 35px;
   bottom: 0;
@@ -92,7 +92,7 @@ body {
 }
 
 .wave1 {
-  background: url(/assets/wave1.svg)
+  background: url("^assets/wave1.svg")
     repeat-x;
   height: 150px;
   bottom: 0;
@@ -100,7 +100,7 @@ body {
 }
 
 .wave2 {
-  background: url(/assets/wave2.svg)
+  background: url("^assets/wave2.svg")
     repeat-x;
   height: 180px;
   bottom: 30px;
@@ -108,7 +108,7 @@ body {
 }
 
 .wave3 {
-  background: url(/assets/wave3.svg)
+  background: url("^assets/wave3.svg")
     repeat-x;
   height: 180px;
   bottom: 90px;
@@ -116,7 +116,7 @@ body {
 }
 
 .wave4 {
-  background: url(/assets/wave4.svg)
+  background: url("^assets/wave4.svg")
     repeat-x;
   height: 180px;
   bottom: 120px;
@@ -124,7 +124,7 @@ body {
 }
 
 .mount1 {
-  background: url(/assets/mount1.svg)
+  background: url("^assets/mount1.svg")
     repeat-x;
   height: 150px;
   bottom: 280px;
@@ -132,7 +132,7 @@ body {
 }
 
 .mount2 {
-  background: url(/assets/mount2.svg)
+  background: url("^assets/mount2.svg")
     repeat-x;
   height: 150px;
   bottom: 290px;
@@ -146,7 +146,7 @@ body {
   left: 0;
   top: 0;
   z-index: 1010;
-  background: url(/assets/noise.png);
+  background: url("^assets/noise.png");
 }
 
 .glow {
@@ -215,7 +215,7 @@ body {
   line-height: 4rem;
   display: block;
 
-  background: url(/assets/supermario.gif)
+  background: url("^assets/supermario.gif")
     no-repeat;
   background-size: 3.5rem;
   background-position: 1rem top;
