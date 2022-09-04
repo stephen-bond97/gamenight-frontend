@@ -8,7 +8,7 @@ import { PlayerInfo } from 'src/typings/playerInfo';
   templateUrl: './create-profile.component.html',
   styleUrls: ['./create-profile.component.scss']
 })
-export class CreateProfileComponent implements OnInit {
+export class CreateProfileComponent {
   public Nickname = "";
   public Avatar = "";
 
@@ -25,9 +25,6 @@ export class CreateProfileComponent implements OnInit {
   ];
 
   public constructor(public dialogRef: MatDialogRef<CreateProfileComponent>, private appService: AppService) { }
-
-  ngOnInit(): void {
-  }
 
   public SaveProfile(): void {
     let profile: PlayerInfo = {

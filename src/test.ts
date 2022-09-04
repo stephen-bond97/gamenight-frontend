@@ -24,3 +24,8 @@ getTestBed().initTestEnvironment(
 const context = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
 context.keys().forEach(context);
+
+(HTMLInputElement.prototype as any).sendKeys = function(input: string) {
+  this.value = input;
+  this.dispatchEvent(new Event('input'));
+}

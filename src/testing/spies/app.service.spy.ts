@@ -8,4 +8,6 @@ export class AppServiceSpy {
     };
 
     SetLoading = jasmine.createSpy("SetLoading");
+
+    UpdateProfile = jasmine.createSpy("UpdateProfile");
   }
