@@ -4,7 +4,7 @@ import { AppService } from 'src/app/services/app.service';
 
 import { ExceptionDialog } from './exception.dialog';
 
-fdescribe('ExceptionDialog', () => {
+describe('ExceptionDialog', () => {
   let component: ExceptionDialog;
   let fixture: ComponentFixture<ExceptionDialog>;
 

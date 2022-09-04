@@ -16,7 +16,7 @@ describe('WheelCategorySelectorComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ WheelCategorySelectorComponent ],
       providers: [
-        { provide: WheelOfFortuneStateService, useClass: WheelOfFortuneStateServiceSpy}
+        { provide: WheelOfFortuneStateService, useClass: WheelOfFortuneStateServiceSpy }
       ]
     })
     .compileComponents();
