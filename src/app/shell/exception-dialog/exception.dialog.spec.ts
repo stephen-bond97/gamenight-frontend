@@ -43,7 +43,7 @@ describe('ExceptionDialog', () => {
     // arrange
     let div = componentElement.querySelector('div') as HTMLDivElement;
 
-    // assert
+    // assert.
     expect(div.innerText).toContain("testmessage");
   });
 
