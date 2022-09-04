@@ -6,4 +6,6 @@ export class AppServiceSpy {
         Avatar: "path/to/image.png",
         Score: 0
     };
+
+    SetLoading = jasmine.createSpy("SetLoading");
   }

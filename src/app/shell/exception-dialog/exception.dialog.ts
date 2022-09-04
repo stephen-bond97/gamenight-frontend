@@ -7,7 +7,7 @@ import { AppService } from 'src/app/services/app.service';
   templateUrl: './exception.dialog.html',
   styleUrls: ['./exception.dialog.scss']
 })
-export class ExceptionDialog implements OnInit {
+export class ExceptionDialog {
 
   @Input()
   public get Message(): string {
@@ -15,9 +15,6 @@ export class ExceptionDialog implements OnInit {
   } 
 
   public constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<ExceptionDialog>, private appService: AppService) {
-  }
-
-  ngOnInit(): void {
   }
 
   public Close(): void {
