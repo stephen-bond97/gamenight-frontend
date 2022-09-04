@@ -13,7 +13,6 @@ import { Category, Category2LabelMapping } from 'src/typings/category.enum';
   styleUrls: ['./create-lobby.component.scss']
 })
 export class CreateLobbyComponent implements OnInit {
-  public LobbyCode = "";
   public numberOfRounds = 1;
   public selectedCategory = "";
   public Category2LabelMapping = Category2LabelMapping;
@@ -43,7 +42,6 @@ export class CreateLobbyComponent implements OnInit {
   }
 
   private handleLobbyCreated(lobbyCode: string): void {
-    this.LobbyCode = lobbyCode;
     this.appService.SetLoading(false);
     this.socketService.LobbyCode = lobbyCode;
     this.gameState.NumberOfRounds = this.numberOfRounds;
