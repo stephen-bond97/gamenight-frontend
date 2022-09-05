@@ -1,13 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { AppService } from 'src/app/services/app.service';
 import { AppServiceSpy } from 'src/testing/spies/app.service.spy';
 
 import { CreateProfileComponent } from './create-profile.component';
 
-fdescribe('CreateProfileComponent', () => {
+describe('CreateProfileComponent', () => {
   let component: CreateProfileComponent;
   let fixture: ComponentFixture<CreateProfileComponent>;
   let componentElement: HTMLElement;

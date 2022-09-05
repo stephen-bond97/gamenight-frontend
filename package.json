@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postinstall": "webdriver-manager update --standalone false --gecko false --versions.chrome 105.0.5195.102"
   },
   "private": true,
   "dependencies": {
@@ -38,6 +39,6 @@
     "karma-jasmine": "~5.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "typescript": "~4.7.2",
-    "protractor": "7.0.0"
+    "puppeteer": "17.1.0"
   }
 }
