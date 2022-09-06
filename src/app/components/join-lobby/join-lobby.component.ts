@@ -21,7 +21,6 @@ export class JoinLobbyComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private socketService: SocketService,
     private router: Router,
-    private route: ActivatedRoute,
     private appService: AppService) { 
     this.socketService.LobbyJoined
       .pipe(untilDestroyed(this))
@@ -70,7 +69,7 @@ export class JoinLobbyComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(["../lobby"], { relativeTo: this.route });
+    this.router.navigate(["../lobby"], { relativeTo: this.activatedRoute });
   }
 
 }

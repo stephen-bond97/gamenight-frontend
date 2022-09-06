@@ -1,3 +1,4 @@
+import { Subject } from "rxjs";
 import { PlayerInfo } from "src/typings/playerInfo";
 
 export class AppServiceSpy {
@@ -10,4 +11,6 @@ export class AppServiceSpy {
     SetLoading = jasmine.createSpy("SetLoading");
 
     UpdateProfile = jasmine.createSpy("UpdateProfile");
+
+    LoadingStateChange = new Subject<boolean>();
   }
