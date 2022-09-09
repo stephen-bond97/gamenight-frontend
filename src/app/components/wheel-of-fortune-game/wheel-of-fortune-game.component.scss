@@ -26,6 +26,7 @@
 
         &.hidden {
             color: transparent;
+            user-select: none;
         }
     }
 }

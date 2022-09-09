@@ -18,7 +18,7 @@ $gamenight-frontend-primary: mat.define-palette($sb-teal, 500, 400, 600);
 $gamenight-frontend-accent: mat.define-palette($sb-yellow, 500, 400, 600);
 
 // The warn palette is optional (defaults to red).
-$gamenight-frontend-warn: mat.define-palette($sb-amber, 500, 400, 600);
+$gamenight-frontend-warn: mat.define-palette($sb-yellow, 500, 400, 600);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".

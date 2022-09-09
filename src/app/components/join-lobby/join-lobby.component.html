@@ -1,5 +1,8 @@
 <mat-form-field appearance="outline">
     <mat-label>Your Lobby Code</mat-label>
-    <input matInput [(ngModel)]="LobbyCode" maxlength="10"(keydown.enter)="HandleJoinLobbyClick()">
+    <input matInput id="lc" name="lc" #lc="ngModel" [(ngModel)]="LobbyCode" required minlength="2" maxlength="5"(keydown.enter)="HandleJoinLobbyClick()">
+    <mat-error *ngIf="lc.errors?.['minlength']">
+        Lobby Code must be 5 characters long.
+    </mat-error>
 </mat-form-field>
-<button mat-flat-button (click)="HandleJoinLobbyClick()" [disabled]="!LobbyCode">Join Lobby</button>
+<button mat-flat-button (click)="HandleJoinLobbyClick()" color="accent" [disabled]="!LobbyCode">Join Lobby</button>

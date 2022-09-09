@@ -80,23 +80,6 @@ describe('CreateProfileComponent', () => {
     let avatars = componentElement.querySelectorAll(".avatar-container > div");
     let firstAvatar = avatars[0] as HTMLDivElement;
     let nameInput = componentElement.querySelector('input') as HTMLInputElement;
-
-    // act
-    firstAvatar.click();
-    nameInput.sendKeys("name");
-    fixture.detectChanges();
-
-    // assert
-    let button = componentElement.querySelector('button') as HTMLButtonElement;
-    expect(button.disabled).toBeFalse();
-  });
-
-  it('should allow profile creation with name and avatar', () => {
-    
-    // arrange
-    let avatars = componentElement.querySelectorAll(".avatar-container > div");
-    let firstAvatar = avatars[0] as HTMLDivElement;
-    let nameInput = componentElement.querySelector('input') as HTMLInputElement;
     let appServiceSpy = TestBed.inject(AppService);
 
     // act
@@ -107,7 +90,6 @@ describe('CreateProfileComponent', () => {
     let button = componentElement.querySelector('button') as HTMLButtonElement;
     button.click();
     fixture.detectChanges();
-    
 
     // assert
     expect(appServiceSpy.UpdateProfile).toHaveBeenCalledOnceWith({
